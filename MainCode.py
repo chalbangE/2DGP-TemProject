@@ -1,4 +1,5 @@
 from pico2d import *
+import background
 
 def handle_events():
     global GameOn
