@@ -11,8 +11,8 @@ def handle_events():
             GameOn = False
 
 
-
 def reset_game():
+
     pass
 
 def update_game():
