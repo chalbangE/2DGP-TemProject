@@ -1,5 +1,5 @@
 from pico2d import *
-import background
+from BackGround import Background
 
 def handle_events():
     global GameOn
@@ -12,8 +12,15 @@ def handle_events():
             GameOn = False
 
 
-def reset_game():
 
+def reset_game():
+    global GameOn, background, world
+
+    GameOn = True
+    world = []
+
+    background = Background()
+    world.append(background)
     pass
 
 def update_game():
@@ -27,7 +34,7 @@ def render_game():
     update_canvas()
 
 
-open_canvas()
+open_canvas(752, 669)
 reset_game()
 
 while GameOn:
