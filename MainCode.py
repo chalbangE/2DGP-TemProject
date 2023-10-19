@@ -1,5 +1,5 @@
 from pico2d import *
-from BackGround import Background
+from BackGround import *
 
 def handle_events():
     global GameOn
@@ -10,8 +10,10 @@ def handle_events():
             GameOn = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             GameOn = False
-
-
+        elif event.type == SDL_MOUSEMOTION:
+            mx, my = event.x, 669 - 1 - event.y
+        elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT:
+            points.append((event.x, TUK_HEIGHT - 1 - event.y))
 
 def reset_game():
     global GameOn, background, world
@@ -19,7 +21,7 @@ def reset_game():
     GameOn = True
     world = []
 
-    background = Background()
+    background = BackGround()
     world.append(background)
     pass
 
@@ -34,7 +36,7 @@ def render_game():
     update_canvas()
 
 
-open_canvas(752, 669)
+open_canvas(back_W, back_H)
 reset_game()
 
 while GameOn:
