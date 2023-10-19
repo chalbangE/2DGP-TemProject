@@ -26,6 +26,19 @@ class Ready:
     def update(back):
         pass
 
+class GameStart:
+    @staticmethod
+    def enter(back):
+        back.image = load_image('PNG\\play_background.png')
+
+    @staticmethod
+    def draw(back):
+        back.image.draw(back_W / 2, back_H / 2)
+
+    @staticmethod
+    def update(back):
+        pass
+
 class State:
      def __init__(self):
         self.now_state = Ready
