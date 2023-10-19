@@ -2,9 +2,6 @@ from pico2d import *
 
 back_W, back_H = 752, 669
 
-def Click(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
-
 class BackGround:
     def __init__(self):
         self.state = State()
