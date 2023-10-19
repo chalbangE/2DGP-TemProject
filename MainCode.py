@@ -2,7 +2,7 @@ from pico2d import *
 from BackGround import *
 
 def handle_events():
-    global GameOn
+    global GameOn, mx, my
 
     events = get_events()
     for event in events:
@@ -10,10 +10,9 @@ def handle_events():
             GameOn = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             GameOn = False
-        elif event.type == SDL_MOUSEMOTION:
-            mx, my = event.x, 669 - 1 - event.y
-        elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT:
-            pass
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            background.handle_event(event)
+
 
 def reset_game():
     global GameOn, background, world
