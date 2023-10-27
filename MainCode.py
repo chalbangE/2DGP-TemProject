@@ -20,7 +20,8 @@ class Mouse():
         self.image = load_image('PNG\\chalk.png')
 
     def draw(self):
-        self.image.draw(mx, my)
+        if background.state.now_state == Ready:
+            self.image.draw(mx, my)
 
     def update(self):
         pass
