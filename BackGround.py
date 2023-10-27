@@ -31,13 +31,13 @@ class Ready:
 
     @staticmethod
     def exit(back):
+        show_cursor()
         pass
 
 
 class GameStart:
     @staticmethod
     def enter(back):
-        show_cursor()
         pass
 
     @staticmethod
