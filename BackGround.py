@@ -15,11 +15,12 @@ class BackGround:
     def handle_event(self, event):
         self.state.handle_event(('INPUT', event))
 
+
 class Ready:
     @staticmethod
     def enter(back):
         pass
-        # hide_cursor()
+        #hide_cursor()
 
     @staticmethod
     def draw(back):

@@ -10,18 +10,31 @@ def handle_events():
             GameOn = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             GameOn = False
+        elif event.type == SDL_MOUSEMOTION:
+            mx, my = event.x, back_H - 1 - event.y
         elif event.type == SDL_MOUSEBUTTONDOWN:
             background.handle_event(event)
 
+class Mouse():
+    def __init__(self):
+        self.image = load_image('PNG\\chalk.png')
+
+    def draw(self):
+        self.image.draw(mx, my)
+
+    def update(self):
+        pass
 
 def reset_game():
-    global GameOn, background, world
+    global GameOn, background, world, mouse
 
     GameOn = True
     world = []
 
     background = BackGround()
     world.append(background)
+    mouse = Mouse()
+    world.append(mouse)
     pass
 
 def update_game():
