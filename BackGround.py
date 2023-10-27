@@ -19,8 +19,7 @@ class BackGround:
 class Ready:
     @staticmethod
     def enter(back):
-        pass
-        #hide_cursor()
+        hide_cursor()
 
     @staticmethod
     def draw(back):
@@ -38,6 +37,7 @@ class Ready:
 class GameStart:
     @staticmethod
     def enter(back):
+        show_cursor()
         pass
 
     @staticmethod
