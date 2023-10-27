@@ -18,16 +18,17 @@ class BackGround:
 class Ready:
     @staticmethod
     def enter(back):
-        back.image = load_image('PNG\\ready_background.png')
+        pass
         # hide_cursor()
 
     @staticmethod
     def draw(back):
-        back.image.draw(back_W / 2, back_H / 2)
+        back.image1.draw(back_W / 2, back_H / 2)
 
     @staticmethod
     def update(back):
         pass
+
     @staticmethod
     def exit(back):
         pass
@@ -36,12 +37,11 @@ class Ready:
 class GameStart:
     @staticmethod
     def enter(back):
-        #print('ppp')
-        back.image = load_image('PNG\\play_background.png')
+        pass
 
     @staticmethod
     def draw(back):
-        back.image.draw(back_W / 3, back_H / 3)
+        back.image2.draw(back_W / 2, back_H / 2)
 
     @staticmethod
     def update(back):
@@ -52,6 +52,8 @@ class GameStart:
 
 class State:
      def __init__(self, back):
+        self.image1 = load_image('PNG\\ready_background.png')
+        self.image2 = load_image('PNG\\play_background.png')
         self.back = back
         self.now_state = Ready
         self.trans = {
