@@ -58,7 +58,7 @@ class State:
         self.back = back
         self.now_state = Ready
         self.trans = {
-            Ready: {click: GameStart},
+            Ready: {click: Ready},
             GameStart: {click: GameStart}
         }
      def start(self):
