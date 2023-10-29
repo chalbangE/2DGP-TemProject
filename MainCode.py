@@ -30,7 +30,11 @@ class Mouse():
                 self.ready_on_img.draw(175, 325)
             if self.ready_state == 2 or self.ready_state == 3:
                 self.ready_on_img.draw(580, 325)
-            self.ready_img.draw(mx, my)
+            if self.ready_state == 3:
+                background.state.now_state = GameStart
+                delay(2)
+            else:
+                self.ready_img.draw(mx, my)
 
     def update(self):
         pass
