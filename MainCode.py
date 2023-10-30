@@ -23,6 +23,7 @@ class Mouse():
         self.ready_img = load_image('PNG\\chalk.png')
         self.ready_on_img = load_image('PNG\\chalk_on.png')
         self.ready_state = 0
+        self.ready_ok = 0
 
     def draw(self):
         if background.state.now_state == Ready:
@@ -30,9 +31,8 @@ class Mouse():
                 self.ready_on_img.draw(175, 325)
             if self.ready_state == 2 or self.ready_state == 3:
                 self.ready_on_img.draw(580, 325)
-            if self.ready_state == 3:
+            if self.ready_state == 3 and get_time() - self.ready_ok >= 2.0:
                 background.state.now_state = GameStart
-                delay(2)
             else:
                 self.ready_img.draw(mx, my)
 
@@ -44,11 +44,13 @@ class Mouse():
             if mx >= 160 and mx <= 200 and my >= 300 and my <= 339:
                 if self.ready_state == 2:
                     self.ready_state = 3
+                    self.ready_ok = get_time()
                 elif self.ready_state == 1 or self.ready_state == 0:
                     self.ready_state = 1
             if mx >= 565 and mx <= 605 and my >= 300 and my <= 339:
                 if self.ready_state == 1:
                     self.ready_state = 3
+                    self.ready_ok = get_time()
                 elif self.ready_state == 2 or self.ready_state == 0:
                     self.ready_state = 2
 
