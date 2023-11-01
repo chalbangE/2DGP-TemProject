@@ -35,6 +35,23 @@ class Ready:
         pass
 
 
+class Select:
+    @staticmethod
+    def enter(back):
+        show_cursor()
+        pass
+
+    @staticmethod
+    def draw(back):
+        back.image3.draw(back_W / 2, back_H / 2)
+
+    @staticmethod
+    def update(back):
+        pass
+    @staticmethod
+    def exit(back):
+        pass
+
 class GameStart:
     @staticmethod
     def enter(back):
@@ -55,6 +72,7 @@ class State:
      def __init__(self, back):
         self.image1 = load_image('PNG\\ready_background.png')
         self.image2 = load_image('PNG\\play_background.png')
+        self.image3 = load_image('PNG\\select_background.png')
         self.back = back
         self.now_state = Ready
         self.trans = {

@@ -32,7 +32,7 @@ class Mouse():
             if self.ready_state == 2 or self.ready_state == 3:
                 self.ready_on_img.draw(580, 325)
             if self.ready_state == 3 and get_time() - self.ready_ok >= 2.0:
-                background.state.now_state = GameStart
+                background.state.now_state = Select
             else:
                 self.ready_img.draw(mx, my)
 
@@ -53,7 +53,6 @@ class Mouse():
                     self.ready_ok = get_time()
                 elif self.ready_state == 2 or self.ready_state == 0:
                     self.ready_state = 2
-
 
 def reset_game():
     global GameOn, background, world, mouse
