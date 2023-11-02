@@ -113,6 +113,23 @@ class Player:
     def handle_event(self, e):
         pass
 
+class Ball:
+    def __init__(self):
+        self.Character_img = load_image("PNG\\Character.png")
+        self.p1_select = 3
+        self.p2_select = 3
+    def draw(self):
+        if background.state.now_state == GameStart:
+            self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
+            self.Character_img.clip_composite_draw(self.p1_select * 100, 0, 100, 100, 0, 'h', 130, back_H - 130, 280, 280)
+        pass
+
+    def update(self):
+        pass
+
+    def handle_event(self, e):
+        pass
+
 def reset_game():
     global GameOn, background, world, mouse, player
 

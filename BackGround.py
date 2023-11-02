@@ -71,7 +71,7 @@ class GameStart:
 class State:
      def __init__(self, back):
         self.image1 = load_image('PNG\\ready_background.png')
-        self.image2 = load_image('PNG\\play_background.png')
+        self.image2 = load_image('PNG\\play_background2.png')
         self.image3 = load_image('PNG\\select_background.png')
 
         self.p1select_img = load_image('PNG\\1P_select.png')
