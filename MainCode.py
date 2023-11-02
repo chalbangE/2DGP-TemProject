@@ -12,6 +12,7 @@ def handle_events():
             GameOn = False
         elif event.type == SDL_MOUSEMOTION:
             mx, my = event.x, back_H - 1 - event.y
+            mouse.handle_event(event)
             background.handle_event(event)
         elif event.type == SDL_MOUSEBUTTONDOWN:
             background.handle_event(event)
@@ -38,17 +39,6 @@ class Mouse():
                 show_cursor()
             else:
                 self.ready_img.draw(mx, my)
-        # Select에서 마우스
-        elif background.state.now_state == Select:
-            # 90~250~410~570
-            if my >= 90 and my <= 250:
-                pass
-            elif my >= 250 and my <= 410:
-                pass
-            elif my >= 410 and my <= 570:
-                pass
-
-
     def update(self):
         pass
 
@@ -66,9 +56,36 @@ class Mouse():
                     self.ready_ok = get_time()
                 elif self.ready_state == 2 or self.ready_state == 0:
                     self.ready_state = 2
+            # Select에서 마우스
+        elif background.state.now_state == Select:
+            if player.p1_select == 3:
+                if my >= 90 and my <= 250:
+                    background.state.p1whatSelect = 2
+                elif my >= 250 and my <= 410:
+                    background.state.p1whatSelect = 1
+                elif my >= 410 and my <= 570:
+                    background.state.p1whatSelect = 0
+                else:
+                    background.state.p1whatSelect = 3
+
+
+class Player:
+    def __init__(self):
+        self.p1_img = 'None'
+        self.p2_img = 'None'
+        self.p1_select = 3
+        self.p2_select = 3
+    def draw(self):
+        pass
+
+    def update(self):
+        pass
+
+    def handle_event(self, e):
+        pass
 
 def reset_game():
-    global GameOn, background, world, mouse
+    global GameOn, background, world, mouse, player
 
     GameOn = True
     world = []
@@ -77,6 +94,8 @@ def reset_game():
     world.append(background)
     mouse = Mouse()
     world.append(mouse)
+    player = Player()
+    world.append(player)
     pass
 
 def update_game():
