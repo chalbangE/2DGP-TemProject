@@ -34,7 +34,7 @@ class Mouse():
                 self.ready_on_img.draw(175, 325)
             if self.ready_state == 2 or self.ready_state == 3:
                 self.ready_on_img.draw(580, 325)
-            if self.ready_state == 3 and get_time() - self.ready_ok >= 2.0:
+            if self.ready_state == 3 and get_time() - self.ready_ok >= 1.5:
                 background.state.now_state = Select
                 show_cursor()
             else:
@@ -78,25 +78,27 @@ class Mouse():
                     background.state.p2whatSelect = 2
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p2_select = 2
+                        self.ready_ok = get_time()
                 elif my >= 250 and my <= 410:
                     background.state.p2whatSelect = 1
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p2_select = 1
+                        self.ready_ok = get_time()
                 elif my >= 410 and my <= 570:
                     background.state.p2whatSelect = 0
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p2_select = 0
+                        self.ready_ok = get_time()
                 else:
                     background.state.p2whatSelect = 3
-
-                if player.p2_select != 3:
+            else:
+                if get_time() - self.ready_ok >= 1.5:
                     background.state.now_state = GameStart
 
 
 class Player:
     def __init__(self):
-        self.p1_img = 'None'
-        self.p2_img = 'None'
+        self.Character_img = load_image("PNG\\Character.png")
         self.p1_select = 3
         self.p2_select = 3
     def draw(self):
