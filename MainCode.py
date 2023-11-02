@@ -61,12 +61,36 @@ class Mouse():
             if player.p1_select == 3:
                 if my >= 90 and my <= 250:
                     background.state.p1whatSelect = 2
+                    if e.type == SDL_MOUSEBUTTONDOWN:
+                        player.p1_select = 2
                 elif my >= 250 and my <= 410:
                     background.state.p1whatSelect = 1
+                    if e.type == SDL_MOUSEBUTTONDOWN:
+                        player.p1_select = 1
                 elif my >= 410 and my <= 570:
                     background.state.p1whatSelect = 0
+                    if e.type == SDL_MOUSEBUTTONDOWN:
+                        player.p1_select = 0
                 else:
                     background.state.p1whatSelect = 3
+            elif player.p2_select == 3:
+                if my >= 90 and my <= 250:
+                    background.state.p2whatSelect = 2
+                    if e.type == SDL_MOUSEBUTTONDOWN:
+                        player.p2_select = 2
+                elif my >= 250 and my <= 410:
+                    background.state.p2whatSelect = 1
+                    if e.type == SDL_MOUSEBUTTONDOWN:
+                        player.p2_select = 1
+                elif my >= 410 and my <= 570:
+                    background.state.p2whatSelect = 0
+                    if e.type == SDL_MOUSEBUTTONDOWN:
+                        player.p2_select = 0
+                else:
+                    background.state.p2whatSelect = 3
+
+                if player.p2_select != 3:
+                    background.state.now_state = GameStart
 
 
 class Player:
