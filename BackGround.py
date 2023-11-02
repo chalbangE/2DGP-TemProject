@@ -1,6 +1,7 @@
 from pico2d import *
 
 back_W, back_H = 752, 669
+back_WS = 762
 def click(e):
     return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN
 class BackGround:
@@ -38,12 +39,13 @@ class Ready:
 class Select:
     @staticmethod
     def enter(back):
-        show_cursor()
         pass
 
     @staticmethod
     def draw(back):
         back.image3.draw(back_W / 2, back_H / 2)
+        back.p1select_img.clip_draw(back.p1whatSelect * back_WS, 0, back_WS, back_H, back_W / 2, back_H / 2)
+        back.p2select_img.clip_draw(back.p2whatSelect * back_WS, 0, back_WS, back_H, back_W / 2, back_H / 2)
 
     @staticmethod
     def update(back):
@@ -56,11 +58,9 @@ class GameStart:
     @staticmethod
     def enter(back):
         pass
-
     @staticmethod
     def draw(back):
         back.image2.draw(back_W / 2, back_H / 2)
-
     @staticmethod
     def update(back):
         pass
@@ -73,12 +73,14 @@ class State:
         self.image1 = load_image('PNG\\ready_background.png')
         self.image2 = load_image('PNG\\play_background.png')
         self.image3 = load_image('PNG\\select_background.png')
+
+        self.p1select_img = load_image('PNG\\1P_select.png')
+        self.p2select_img = load_image('PNG\\2P_select.png')
+        self.p1whatSelect = 3
+        self.p2whatSelect = 3
+
         self.back = back
-        self.now_state = Ready
-        self.trans = {
-            Ready: {click: Ready},
-            GameStart: {click: GameStart}
-        }
+        self.now_state = Select
      def start(self):
         self.now_state.enter(self)
      def update(self):
@@ -86,11 +88,4 @@ class State:
      def draw(self):
         self.now_state.draw(self)
      def handle_event(self, e):
-        for check_event, next_state in self.trans[self.now_state].items():
-            if check_event(e):
-                self.now_state.exit(self.back)
-                self.now_state = next_state
-                self.now_state.enter(self.back)
-                return True
-
-        return False
+         pass

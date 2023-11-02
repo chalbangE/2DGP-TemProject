@@ -12,6 +12,7 @@ def handle_events():
             GameOn = False
         elif event.type == SDL_MOUSEMOTION:
             mx, my = event.x, back_H - 1 - event.y
+            background.handle_event(event)
         elif event.type == SDL_MOUSEBUTTONDOWN:
             background.handle_event(event)
             mouse.handle_event(event)
@@ -26,6 +27,7 @@ class Mouse():
         self.ready_ok = 0
 
     def draw(self):
+        # Ready에서 마우스
         if background.state.now_state == Ready:
             if self.ready_state == 1 or self.ready_state == 3:
                 self.ready_on_img.draw(175, 325)
@@ -33,8 +35,19 @@ class Mouse():
                 self.ready_on_img.draw(580, 325)
             if self.ready_state == 3 and get_time() - self.ready_ok >= 2.0:
                 background.state.now_state = Select
+                show_cursor()
             else:
                 self.ready_img.draw(mx, my)
+        # Select에서 마우스
+        elif background.state.now_state == Select:
+            # 90~250~410~570
+            if my >= 90 and my <= 250:
+                pass
+            elif my >= 250 and my <= 410:
+                pass
+            elif my >= 410 and my <= 570:
+                pass
+
 
     def update(self):
         pass
@@ -59,7 +72,6 @@ def reset_game():
 
     GameOn = True
     world = []
-    mx, my = -100, -100
 
     background = BackGround()
     world.append(background)
@@ -80,6 +92,7 @@ def render_game():
 
 open_canvas(back_W, back_H)
 reset_game()
+mx, my = -100, -100
 
 while GameOn:
     handle_events()
