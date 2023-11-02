@@ -102,6 +102,9 @@ class Player:
         self.p1_select = 3
         self.p2_select = 3
     def draw(self):
+        if background.state.now_state == GameStart:
+            self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
+            self.Character_img.clip_composite_draw(self.p1_select * 100, 0, 100, 100, 0, 'h', 130, back_H - 130, 280, 280)
         pass
 
     def update(self):
