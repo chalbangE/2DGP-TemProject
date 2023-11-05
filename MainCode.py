@@ -133,8 +133,8 @@ class Ball:
         if Ball.img == None:
             Ball.img = load_image("PNG\\ball26x26.png")
         self.whatball = 0
-        self.x = random.randint(90, 680)
-        self.y = random.randint(100, 326)
+        self.x = 0 #random.randint(90, 680)
+        self.y = 0 #random.randint(100, 326)
         self.ani = 0
         self.dis_x = 0
         self.dis_y = 0
@@ -178,6 +178,31 @@ def reset_game():
     world.append(mainball)
 
     ball = [Ball() for i in range(6)]
+
+    Deployment = []
+    for i in range(6):
+        a = random.randint(0, 5)
+        while a in Deployment:
+            a = random.randint(0, 5)
+        Deployment.append(a)
+
+    ball[Deployment[0]].x = 375
+    ball[Deployment[0]].y = 215
+
+    ball[Deployment[1]].x = 410
+    ball[Deployment[1]].y = 240
+
+    ball[Deployment[2]].x = 410
+    ball[Deployment[2]].y = 190
+
+    ball[Deployment[3]].x = 445
+    ball[Deployment[3]].y = 215
+
+    ball[Deployment[4]].x = 445
+    ball[Deployment[4]].y = 255
+
+    ball[Deployment[5]].x = 445
+    ball[Deployment[5]].y = 175
 
     for i in range(6):
         ball[i].whatball = i + 1
