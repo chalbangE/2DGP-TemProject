@@ -1,5 +1,6 @@
 from pico2d import *
 from BackGround import *
+import random
 
 def handle_events():
     global GameOn, mx, my
@@ -125,18 +126,29 @@ class Player:
 
 #class Ball:
 
-class Play:
+class Ball:
+    img = None
     def __init__(self):
-        self.Character_img = load_image("PNG\\Character.png")
-        self.p1_select = 3
-        self.p2_select = 3
+        if Ball.img == None:
+            Ball.img = load_image("PNG\\ball26x26.png")
+        self.whatball = 0
+        self.x = random.randint(90, 680)
+        self.y = random.randint(100, 326)
+        self.ani = 0
+        self.dis_x = 0
+        self.dis_y = 0
+        self.theta = 0
     def draw(self):
         if background.state.now_state == GameStart:
-            self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
-            self.Character_img.clip_composite_draw(self.p1_select * 100, 0, 100, 100, 0, 'h', 130, back_H - 130, 280, 280)
-        pass
+            self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.theta, 'v', self.x, self.y, 30, 30)
 
     def update(self):
+        self.x += self.dis_x
+        self.y += self.dis_y
+        if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
+            self.ani += 1
+            if self.ani == 75:
+                self.ani = 0
         pass
 
     def handle_event(self, e):
@@ -144,7 +156,7 @@ class Play:
 
 
 def reset_game():
-    global GameOn, background, world, mouse, player
+    global GameOn, background, world, mouse, player, mainball, ball
 
     GameOn = True
     world = []
@@ -155,6 +167,16 @@ def reset_game():
     world.append(mouse)
     player = Player()
     world.append(player)
+
+    mainball = Ball()
+    mainball.x = 100
+    mainball.y = 215
+    world.append(mainball)
+
+    ball = [Ball() for i in range(6)]
+
+    for i in range(6):
+        world.append(ball[i])
     pass
 
 def update_game():
