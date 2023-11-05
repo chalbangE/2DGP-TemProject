@@ -1,6 +1,7 @@
 from pico2d import *
 from BackGround import *
 import random
+import math
 
 def handle_events():
     global GameOn, mx, my
@@ -137,10 +138,10 @@ class Ball:
         self.ani = 0
         self.dis_x = 0
         self.dis_y = 0
-        self.theta = 0
+        self.radian = 0
     def draw(self):
         if background.state.now_state == GameStart:
-            self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.theta * 3.14 / 180, '', self.x, self.y, 30, 30)
+            self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.radian, '', self.x, self.y, 30, 30)
 
     def update(self):
         self.x += self.dis_x
@@ -149,6 +150,7 @@ class Ball:
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
+        self.radian = math.atan2(self.dis_y, self.dis_x)
         pass
 
     def handle_event(self, e):
@@ -171,6 +173,8 @@ def reset_game():
     mainball = Ball()
     mainball.x = 100
     mainball.y = 215
+    mainball.dis_x = 0
+    mainball.dis_y = 0
     world.append(mainball)
 
     ball = [Ball() for i in range(6)]
