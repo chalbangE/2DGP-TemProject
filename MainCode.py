@@ -140,7 +140,7 @@ class Ball:
         self.theta = 0
     def draw(self):
         if background.state.now_state == GameStart:
-            self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.theta, 'v', self.x, self.y, 30, 30)
+            self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.theta * 3.14, '', self.x, self.y, 30, 30)
 
     def update(self):
         self.x += self.dis_x
@@ -176,6 +176,7 @@ def reset_game():
     ball = [Ball() for i in range(6)]
 
     for i in range(6):
+        ball[i].whatball = i + 1
         world.append(ball[i])
     pass
 
