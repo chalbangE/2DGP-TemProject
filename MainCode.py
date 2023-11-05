@@ -20,10 +20,13 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONUP:
             mouse.handle_event(event)
 
+turn = 1
+
 class Mouse():
     def __init__(self):
         self.ready_img = load_image('PNG\\chalk.png')
         self.ready_on_img = load_image('PNG\\chalk_on.png')
+        self.play_img = load_image('PNG\\Character_mouse.png')
         self.ready_state = 0
         self.ready_ok = 0
 
@@ -39,6 +42,12 @@ class Mouse():
                 show_cursor()
             else:
                 self.ready_img.draw(mx, my)
+        if background.state.now_state == GameStart:
+            if turn == 1:
+                self.play_img.clip_draw(player.p1_select * 80, 0, 80, 70, mx, my, 80, 70)
+            elif turn == 2:
+                self.play_img.clip_draw(player.p2_select * 80, 0, 80, 70, mx, my, 80, 70)
+
     def update(self):
         pass
 
@@ -94,6 +103,7 @@ class Mouse():
             else:
                 if get_time() - self.ready_ok >= 1.5:
                     background.state.now_state = GameStart
+                    hide_cursor()
 
 
 class Player:
@@ -113,7 +123,9 @@ class Player:
     def handle_event(self, e):
         pass
 
-class Ball:
+#class Ball:
+
+class Play:
     def __init__(self):
         self.Character_img = load_image("PNG\\Character.png")
         self.p1_select = 3
@@ -129,6 +141,7 @@ class Ball:
 
     def handle_event(self, e):
         pass
+
 
 def reset_game():
     global GameOn, background, world, mouse, player
