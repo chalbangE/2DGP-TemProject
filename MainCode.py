@@ -16,7 +16,7 @@ def handle_events():
             mx, my = event.x, back_H - 1 - event.y
             mouse.handle_event(event)
             background.handle_event(event)
-            mainball.handle_event(event)
+            arrow.handle_event(event)
         elif event.type == SDL_MOUSEBUTTONDOWN:
             background.handle_event(event)
             mouse.handle_event(event)
@@ -127,12 +127,33 @@ class Player:
     def handle_event(self, e):
         pass
 
+class Arrow:
+    def __init__(self):
+        self.img = load_image("PNG\\arrow.png")
+        self.radian = 0
+        self.dis_x = 0
+        self.dis_y = 0
+        self.radian = math.atan2(self.dis_y, self.dis_x)
+
+    def draw(self):
+        if background.state.now_state == GameStart:
+            self.img.clip_composite_draw(0, 0, 78, 26, self.radian, '', mainball.x, mainball.y, 78, 26)
+
+    def update(self):
+        self.radian = math.atan2(self.dis_y, self.dis_x)
+        pass
+
+    def handle_event(self, e):
+        self.dis_x = mx - mainball.x
+        self.dis_y = my - mainball.y
+        pass
+
+
 class Ball:
     img = None
     def __init__(self):
         if Ball.img == None:
             Ball.img = load_image("PNG\\ball26x26.png")
-            Ball.arrow_img = load_image("PNG\\arrow.png")
         self.whatball = 0
         self.x = 0 #random.randint(90, 680)
         self.y = 0 #random.randint(100, 326)
@@ -140,15 +161,10 @@ class Ball:
         self.dis_x = 0
         self.dis_y = 0
         self.radian = 0
-        self.arrow_x = 0
-        self.arrow_y = 0
 
     def draw(self):
-
         if background.state.now_state == GameStart:
             self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.radian, '', self.x, self.y, 26, 26)
-            if self.whatball == 0:
-                self.arrow_img.clip_composite_draw(0, 0, 78, 26, self.radian, '', self.x, self.y, 78, 26)
 
     def update(self):
         self.x += self.dis_x
@@ -166,7 +182,7 @@ class Ball:
 
 
 def reset_game():
-    global GameOn, background, world, mouse, player, mainball, ball
+    global GameOn, background, world, mouse, player, mainball, ball, arrow
 
     GameOn = True
     world = []
@@ -214,6 +230,9 @@ def reset_game():
 
     player = Player()
     world.append(player)
+
+    arrow = Arrow()
+    world.append(arrow)
 
     mouse = Mouse()
     world.append(mouse)
