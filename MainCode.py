@@ -144,14 +144,14 @@ class Arrow:
             if self.mod != 'shoot':
                 self.img.clip_composite_draw(0, 0, 78, 26, self.radian, '', mainball.x, mainball.y, 78, 26)
             if self.mod == 'power':
-                self.power_font.draw(mx + 40, my + 40, f'{self.power // 7}', (255, 255, 255))
+                self.power_font.draw(mx + 40, my + 40, f'{self.power // 10}', (255, 255, 255))
 
     def update(self):
         if self.mod == 'dis':
             self.radian = math.atan2(self.dis_y, self.dis_x)
         elif self.mod == 'power':
             self.power += 1
-            if self.power == 80:
+            if self.power == 110:
                 self.power = 0
         pass
 
@@ -159,13 +159,18 @@ class Arrow:
         if background.state.now_state == GameStart and self.mod == 'dis':
             self.dis_x = mx - mainball.x
             self.dis_y = my - mainball.y
+            length = math.sqrt(math.pow(self.dis_x, 2) + math.pow(self.dis_y, 2))
+            self.dis_x = self.dis_x / length
+            self.dis_y = self.dis_y / length
+
             if e.type == SDL_MOUSEBUTTONDOWN:
                 self.mod = 'power'
         elif self.mod == 'power':
             if e.type == SDL_MOUSEBUTTONDOWN:
                 self.mod = 'shoot'
-                
-            pass
+                self.power = self.power // 10
+                mainball.dis_x = self.dis_x * self.power
+                mainball.dis_y = self.dis_y * self.power
 
 class Ball:
     img = None
@@ -178,6 +183,8 @@ class Ball:
         self.ani = 0
         self.dis_x = 0
         self.dis_y = 0
+        self.face_dis_x = 0
+        self.face_dis_y = 0
         self.radian = 0
 
     def draw(self):
@@ -187,16 +194,37 @@ class Ball:
     def update(self):
         self.x += self.dis_x
         self.y += self.dis_y
+
         if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
+            self.Dis_reduce()
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
 
-        self.radian = math.atan2(self.dis_y, self.dis_x)
+        self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
         pass
 
     def handle_event(self, e):
         pass
+
+    def Dis_reduce(self):
+        if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
+            if self.dis_x > 0:
+                self.dis_x -= 0.1
+                if self.dis_x < 0:
+                    self.dis_x = 0
+            elif self.dis_x < 0:
+                self.dis_x += 0.1
+                if self.dis_x > 0:
+                    self.dis_x = 0
+            elif self.dis_y > 0:
+                self.dis_y -= 0.1
+                if self.dis_y < 0:
+                    self.dis_y = 0
+            elif self.dis_y < 0:
+                self.dis_y += 0.1
+                if self.dis_y > 0:
+                    self.dis_y = 0
 
 
 def reset_game():
