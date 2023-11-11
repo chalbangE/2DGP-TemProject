@@ -136,13 +136,23 @@ class Arrow:
         self.dis_y = 0
         self.radian = math.atan2(self.dis_y, self.dis_x)
         self.mod = 'dis'
+        self.power = 0
+        self.power_font = load_font('ttf\\PF스타더스트 Bold.ttf', 30)
 
     def draw(self):
         if background.state.now_state == GameStart:
-            self.img.clip_composite_draw(0, 0, 78, 26, self.radian, '', mainball.x, mainball.y, 78, 26)
+            if self.mod != 'shoot':
+                self.img.clip_composite_draw(0, 0, 78, 26, self.radian, '', mainball.x, mainball.y, 78, 26)
+            if self.mod == 'power':
+                self.power_font.draw(mx + 40, my + 40, f'{self.power // 7}', (255, 255, 255))
 
     def update(self):
-        self.radian = math.atan2(self.dis_y, self.dis_x)
+        if self.mod == 'dis':
+            self.radian = math.atan2(self.dis_y, self.dis_x)
+        elif self.mod == 'power':
+            self.power += 1
+            if self.power == 80:
+                self.power = 0
         pass
 
     def handle_event(self, e):
@@ -152,6 +162,9 @@ class Arrow:
             if e.type == SDL_MOUSEBUTTONDOWN:
                 self.mod = 'power'
         elif self.mod == 'power':
+            if e.type == SDL_MOUSEBUTTONDOWN:
+                self.mod = 'shoot'
+                
             pass
 
 class Ball:
