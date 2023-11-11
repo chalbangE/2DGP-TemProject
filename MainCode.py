@@ -211,20 +211,23 @@ class Ball:
         if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
             if self.dis_x > 0:
                 self.dis_x -= 0.1
-                if self.dis_x < 0:
+                if self.dis_x <= 0:
                     self.dis_x = 0
             elif self.dis_x < 0:
                 self.dis_x += 0.1
-                if self.dis_x > 0:
+                if self.dis_x >= 0:
                     self.dis_x = 0
             elif self.dis_y > 0:
                 self.dis_y -= 0.1
-                if self.dis_y < 0:
+                if self.dis_y <= 0:
                     self.dis_y = 0
             elif self.dis_y < 0:
                 self.dis_y += 0.1
-                if self.dis_y > 0:
+                if self.dis_y >= 0:
                     self.dis_y = 0
+
+            self.face_dis_x = self.dis_x
+            self.face_dis_y = self.dis_y
 
 
 def reset_game():
