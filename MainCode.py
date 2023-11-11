@@ -16,6 +16,7 @@ def handle_events():
             mx, my = event.x, back_H - 1 - event.y
             mouse.handle_event(event)
             background.handle_event(event)
+            mainball.handle_event(event)
         elif event.type == SDL_MOUSEBUTTONDOWN:
             background.handle_event(event)
             mouse.handle_event(event)
@@ -108,6 +109,7 @@ class Mouse():
                     hide_cursor()
 
 
+
 class Player:
     def __init__(self):
         self.Character_img = load_image("PNG\\Character.png")
@@ -125,13 +127,12 @@ class Player:
     def handle_event(self, e):
         pass
 
-#class Ball:
-
 class Ball:
     img = None
     def __init__(self):
         if Ball.img == None:
             Ball.img = load_image("PNG\\ball26x26.png")
+            Ball.arrow_img = load_image("PNG\\arrow.png")
         self.whatball = 0
         self.x = 0 #random.randint(90, 680)
         self.y = 0 #random.randint(100, 326)
@@ -139,9 +140,15 @@ class Ball:
         self.dis_x = 0
         self.dis_y = 0
         self.radian = 0
+        self.arrow_x = 0
+        self.arrow_y = 0
+
     def draw(self):
+
         if background.state.now_state == GameStart:
-            self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.radian, '', self.x, self.y, 30, 30)
+            self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.radian, '', self.x, self.y, 26, 26)
+            if self.whatball == 0:
+                self.arrow_img.clip_composite_draw(0, 0, 78, 26, self.radian, '', self.x, self.y, 78, 26)
 
     def update(self):
         self.x += self.dis_x
@@ -150,6 +157,7 @@ class Ball:
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
+
         self.radian = math.atan2(self.dis_y, self.dis_x)
         pass
 
@@ -165,10 +173,6 @@ def reset_game():
 
     background = BackGround()
     world.append(background)
-    mouse = Mouse()
-    world.append(mouse)
-    player = Player()
-    world.append(player)
 
     mainball = Ball()
     mainball.x = 100
@@ -207,6 +211,12 @@ def reset_game():
     for i in range(6):
         ball[i].whatball = i + 1
         world.append(ball[i])
+
+    player = Player()
+    world.append(player)
+
+    mouse = Mouse()
+    world.append(mouse)
     pass
 
 def update_game():
