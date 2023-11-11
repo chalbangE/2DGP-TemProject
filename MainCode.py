@@ -20,6 +20,7 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONDOWN:
             background.handle_event(event)
             mouse.handle_event(event)
+            arrow.handle_event(event)
         elif event.type == SDL_MOUSEBUTTONUP:
             mouse.handle_event(event)
 
@@ -134,6 +135,7 @@ class Arrow:
         self.dis_x = 0
         self.dis_y = 0
         self.radian = math.atan2(self.dis_y, self.dis_x)
+        self.mod = 'dis'
 
     def draw(self):
         if background.state.now_state == GameStart:
@@ -144,10 +146,13 @@ class Arrow:
         pass
 
     def handle_event(self, e):
-        self.dis_x = mx - mainball.x
-        self.dis_y = my - mainball.y
-        pass
-
+        if background.state.now_state == GameStart and self.mod == 'dis':
+            self.dis_x = mx - mainball.x
+            self.dis_y = my - mainball.y
+            if e.type == SDL_MOUSEBUTTONDOWN:
+                self.mod = 'power'
+        elif self.mod == 'power':
+            pass
 
 class Ball:
     img = None
