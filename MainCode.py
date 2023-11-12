@@ -164,16 +164,25 @@ class Arrow:
             self.dis_y = self.dis_y / length
 
             if e.type == SDL_MOUSEBUTTONDOWN:
-                self.mod = 'power'
+                self.Mod_trans('power')
         elif self.mod == 'power':
             if e.type == SDL_MOUSEBUTTONDOWN:
-                self.mod = 'shoot'
+                self.Mod_trans('shoot')
                 self.power = self.power / 5
                 mainball.dis_x = self.dis_x * self.power
                 mainball.dis_y = self.dis_y * self.power
                 mainball.power = self.power
                 mainball.face_dis_x = mainball.dis_x
                 mainball.face_dis_y = mainball.dis_y
+
+    def Mod_trans(self, trans_mod):
+        self.mod = trans_mod
+        if trans_mod == 'dis':
+            self.power = 0
+        elif trans_mod == 'power':
+            pass
+        elif trans_mod == 'shoot':
+            pass
 
 class Ball:
     img = None
@@ -206,8 +215,9 @@ class Ball:
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
+            # 공 이동 끝나면
             if self.dis_x == 0 and self.dis_y == 0:
-                arrow.mod = 'dis'
+                arrow.Mod_trans('dis')
 
         self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
         pass
@@ -239,10 +249,10 @@ class Ball:
                     self.dis_y = 0
 
     def Collide_wall(self):
-        if self.x <= 45 or self.x >= 715:
+        if self.x <= 45 or self.x >= 715 - 13:
             self.dis_x *= -1
             self.face_dis_x *= -1
-        if self.y <= back_H - 610 or self.y >= back_H - 300:
+        if self.y <= back_H - 610 + 13 or self.y >= back_H - 300 - 13:
             self.dis_y *= -1
             self.face_dis_y *= -1
         pass
@@ -270,9 +280,14 @@ class Ball:
                     y_collide = True
 
                 if x_collide and y_collide:
-                    # 충돌이 발생한 경우 충돌 각을 계산하여 출력
-                    collision_angle = self.calculate_collision_angle(ball[i])
-                    print(f'Collision Angle with ball {i}: {math.degrees(collision_angle)} degrees')
+                    ball[i].dis_x = -(mainball.x - ball[i].x)
+                    ball[i].dis_y = -(mainball.y - ball[i].y)
+                    length = math.sqrt(math.pow(ball[i].dis_x, 2) + math.pow(ball[i].dis_y, 2))
+                    ball[i].dis_x = ball[i].dis_x / length
+                    ball[i].dis_y = ball[i].dis_y / length
+                    ball[i].face_dis_x = ball[i].dis_x
+                    ball[i].face_dis_y = ball[i].dis_y
+                    self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
 
 
 
