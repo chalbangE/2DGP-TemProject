@@ -176,9 +176,14 @@ class Arrow:
                 mainball.face_dis_y = mainball.dis_y
 
     def Mod_trans(self, trans_mod):
+        global turn
         self.mod = trans_mod
         if trans_mod == 'dis':
             self.power = 0
+            if turn == 1:
+                turn = 2
+            else:
+                turn = 1
         elif trans_mod == 'power':
             pass
         elif trans_mod == 'shoot':
@@ -216,7 +221,7 @@ class Ball:
             if self.ani == 75:
                 self.ani = 0
             # 공 이동 끝나면
-            if self.dis_x == 0 and self.dis_y == 0:
+            if self.dis_x == 0 and self.dis_y == 0 and self.whatball == 0:
                 arrow.Mod_trans('dis')
 
         self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
@@ -250,9 +255,11 @@ class Ball:
 
     def Collide_wall(self):
         if self.x <= 45 or self.x >= 715 - 13:
+            self.x -= self.dis_x
             self.dis_x *= -1
             self.face_dis_x *= -1
         if self.y <= back_H - 610 + 13 or self.y >= back_H - 300 - 13:
+            self.y -= self.dis_y
             self.dis_y *= -1
             self.face_dis_y *= -1
         pass
@@ -281,13 +288,16 @@ class Ball:
 
                 if x_collide and y_collide:
                     ball[i].dis_x = -(mainball.x - ball[i].x)
-                    ball[i].dis_y = -(mainball.y - ball[i].y)
+                    ball[i].dis_y = (mainball.y - ball[i].y)
                     length = math.sqrt(math.pow(ball[i].dis_x, 2) + math.pow(ball[i].dis_y, 2))
-                    ball[i].dis_x = ball[i].dis_x / length
-                    ball[i].dis_y = ball[i].dis_y / length
+                    ball[i].dis_x = (ball[i].dis_x / length) * (mainball.dis_x / 10)
+                    ball[i].dis_y = (ball[i].dis_y / length) * (mainball.dis_y / 10)
                     ball[i].face_dis_x = ball[i].dis_x
                     ball[i].face_dis_y = ball[i].dis_y
-                    self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
+                    ball[i].radian = math.atan2(ball[i].face_dis_y, ball[i].face_dis_x)
+                    # 충돌을 잘 확인하기 위해 충돌하면 mainball을 아예 멈추게 수정
+                    self.dis_x = 0
+                    self.dis_y = 0
 
 
 
