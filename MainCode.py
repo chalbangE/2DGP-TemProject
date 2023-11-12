@@ -206,6 +206,8 @@ class Ball:
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
+            if self.dis_x == 0 and self.dis_y == 0:
+                arrow.mod = 'dis'
 
         self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
         pass
