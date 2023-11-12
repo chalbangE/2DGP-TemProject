@@ -202,6 +202,7 @@ class Ball:
         if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
             self.Dis_reduce()
             self.Collide_wall()
+            self.Collide_ball()
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
@@ -244,6 +245,23 @@ class Ball:
             self.face_dis_y *= -1
         pass
 
+    def Collide_ball(self):
+        if self.whatball == 0:
+            for i in range (6):
+                ball_space_x = math.pow(ball[i].x - self.x, 2)
+                ball_space_y = math.pow(ball[i].y - self.y, 2)
+                x_collide = False
+                y_collide = False
+                if ball_space_x <= math.pow(26, 2):
+                    x_collide = True
+                if ball_space_y <= math.pow(26, 2):
+                    y_collide = True
+
+                if x_collide and y_collide:
+                    print(f'ball : {ball[i].whatball}')
+
+
+        pass
 
 
 
