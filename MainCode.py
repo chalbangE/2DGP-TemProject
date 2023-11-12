@@ -201,6 +201,7 @@ class Ball:
 
         if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
             self.Dis_reduce()
+            self.Collide_wall()
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
@@ -220,8 +221,8 @@ class Ball:
                 if self.dis_x <= 0.05:
                     self.dis_x = 0
             elif self.dis_x < 0:
-                self.dis_x += self.face_dis_x * decay_rate
-                if self.dis_x >= 0.05:
+                self.dis_x -= self.face_dis_x * decay_rate
+                if self.dis_x >= -0.05:
                     self.dis_x = 0
 
             if self.dis_y > 0:
@@ -229,11 +230,17 @@ class Ball:
                 if self.dis_y <= 0.05:
                     self.dis_y = 0
             elif self.dis_y < 0:
-                self.dis_y += self.face_dis_y * decay_rate
-                if self.dis_y >= 0.05:
+                self.dis_y -= self.face_dis_y * decay_rate
+                if self.dis_y >= -0.05:
                     self.dis_y = 0
 
     def Collide_wall(self):
+        if self.x <= 45 or self.x >= 715:
+            self.dis_x *= -1
+            self.face_dis_x *= -1
+        if self.y <= back_H - 610 or self.y >= back_H - 300:
+            self.dis_y *= -1
+            self.face_dis_y *= -1
         pass
 
 
