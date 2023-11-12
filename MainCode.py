@@ -168,7 +168,7 @@ class Arrow:
         elif self.mod == 'power':
             if e.type == SDL_MOUSEBUTTONDOWN:
                 self.mod = 'shoot'
-                self.power = self.power // 10
+                self.power = self.power / 10
                 mainball.dis_x = self.dis_x * self.power
                 mainball.dis_y = self.dis_y * self.power
 
@@ -209,6 +209,9 @@ class Ball:
 
     def Dis_reduce(self):
         if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
+            self.face_dis_x = self.dis_x
+            self.face_dis_y = self.dis_y
+
             if self.dis_x > 0:
                 self.dis_x -= 0.1
                 if self.dis_x <= 0:
@@ -217,7 +220,8 @@ class Ball:
                 self.dis_x += 0.1
                 if self.dis_x >= 0:
                     self.dis_x = 0
-            elif self.dis_y > 0:
+
+            if self.dis_y > 0:
                 self.dis_y -= 0.1
                 if self.dis_y <= 0:
                     self.dis_y = 0
@@ -226,8 +230,12 @@ class Ball:
                 if self.dis_y >= 0:
                     self.dis_y = 0
 
-            self.face_dis_x = self.dis_x
-            self.face_dis_y = self.dis_y
+    def Collide_wall(self):
+        pass
+
+
+
+
 
 
 def reset_game():
