@@ -220,7 +220,7 @@ class Ball:
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
-            # 공 이동 끝나면
+            # 공 이동 끝나면GGG
             if self.dis_x == 0 and self.dis_y == 0 and self.whatball == 0:
                 arrow.Mod_trans('dis')
 
@@ -290,8 +290,8 @@ class Ball:
                     ball[i].dis_x = -(mainball.x - ball[i].x)
                     ball[i].dis_y = (mainball.y - ball[i].y)
                     length = math.sqrt(math.pow(ball[i].dis_x, 2) + math.pow(ball[i].dis_y, 2))
-                    ball[i].dis_x = (ball[i].dis_x / length) * (mainball.dis_x / 10)
-                    ball[i].dis_y = (ball[i].dis_y / length) * (mainball.dis_y / 10)
+                    ball[i].dis_x = (ball[i].dis_x / length) * (mainball.dis_x / 2)
+                    ball[i].dis_y = (ball[i].dis_y / length) * (mainball.dis_y / 2)
                     ball[i].face_dis_x = ball[i].dis_x
                     ball[i].face_dis_y = ball[i].dis_y
                     ball[i].radian = math.atan2(ball[i].face_dis_y, ball[i].face_dis_x)
