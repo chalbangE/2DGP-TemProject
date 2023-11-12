@@ -245,9 +245,19 @@ class Ball:
             self.face_dis_y *= -1
         pass
 
+    def calculate_collision_angle(self, other_ball):
+        relative_velocity_x = other_ball.dis_x - self.dis_x
+        relative_velocity_y = other_ball.dis_y - self.dis_y
+
+        relative_speed = math.sqrt(relative_velocity_x ** 2 + relative_velocity_y ** 2)
+        relative_angle = math.atan2(relative_velocity_y, relative_velocity_x)
+
+        collision_angle = (relative_angle + 2 * math.pi) % (2 * math.pi)
+        return collision_angle
+
     def Collide_ball(self):
         if self.whatball == 0:
-            for i in range (6):
+            for i in range(6):
                 ball_space_x = math.pow(ball[i].x - self.x, 2)
                 ball_space_y = math.pow(ball[i].y - self.y, 2)
                 x_collide = False
@@ -258,10 +268,9 @@ class Ball:
                     y_collide = True
 
                 if x_collide and y_collide:
-                    print(f'ball : {ball[i].whatball}')
-
-
-        pass
+                    # 충돌이 발생한 경우 충돌 각을 계산하여 출력
+                    collision_angle = self.calculate_collision_angle(ball[i])
+                    print(f'Collision Angle with ball {i}: {math.degrees(collision_angle)} degrees')
 
 
 
