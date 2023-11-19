@@ -80,7 +80,7 @@ class State:
         self.p2whatSelect = 3
 
         self.back = back
-        self.now_state = Ready
+        self.now_state = GameStart
      def start(self):
         self.now_state.enter(self)
      def update(self):

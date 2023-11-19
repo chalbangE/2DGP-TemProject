@@ -168,7 +168,7 @@ class Arrow:
         elif self.mod == 'power':
             if e.type == SDL_MOUSEBUTTONDOWN:
                 self.Mod_trans('shoot')
-                self.power = self.power / 5
+                self.power = self.power / 10
                 mainball.dis_x = self.dis_x * self.power
                 mainball.dis_y = self.dis_y * self.power
                 mainball.power = self.power
@@ -198,8 +198,6 @@ class Ball:
         self.x = 0 #random.randint(90, 680)
         self.y = 0 #random.randint(100, 326)
         self.ani = 0
-        self.dis_x = 0
-        self.dis_y = 0
         self.face_dis_x = 0
         self.face_dis_y = 0
         self.radian = 0
@@ -208,20 +206,19 @@ class Ball:
     def draw(self):
         if background.state.now_state == GameStart:
             self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.radian, '', self.x, self.y, 26, 26)
-
     def update(self):
-        self.x += self.dis_x
-        self.y += self.dis_y
+        self.x += self.face_dis_x * self.power
+        self.y += self.face_dis_y * self.power
 
-        if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
+        if self.power > 0:
             self.Dis_reduce()
             self.Collide_wall()
             self.Collide_ball()
             self.ani += 1
             if self.ani == 75:
                 self.ani = 0
-            # 공 이동 끝나면GGG
-            if self.dis_x == 0 and self.dis_y == 0 and self.whatball == 0:
+            # 공 이동 끝나면 GGG
+            if self.power == 0 and self.whatball == 0:
                 arrow.Mod_trans('dis')
 
         self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
@@ -231,42 +228,28 @@ class Ball:
         pass
 
     def Dis_reduce(self):
-        if self.dis_x > 0 or self.dis_y > 0 or self.dis_x < 0 or self.dis_y < 0:
-            decay_rate = 0.005
-            stop_dis = 0.03
+        if self.power > 0:
+            decay_rate = 0.02
+            stop_power = 0.01
 
-            if self.dis_x > 0:
-                self.dis_x -= self.face_dis_x * decay_rate
-                if self.dis_x <= stop_dis:
-                    self.dis_x = 0
-            elif self.dis_x < 0:
-                self.dis_x -= self.face_dis_x * decay_rate
-                if self.dis_x >= -stop_dis:
-                    self.dis_x = 0
-
-            if self.dis_y > 0:
-                self.dis_y -= self.face_dis_y * decay_rate
-                if self.dis_y <= stop_dis:
-                    self.dis_y = 0
-            elif self.dis_y < 0:
-                self.dis_y -= self.face_dis_y * decay_rate
-                if self.dis_y >= -stop_dis:
-                    self.dis_y = 0
+            self.power -= decay_rate
+            if (self.whatball == 0):
+                print(self.power)
+            if stop_power >= self.power:
+                self.power = 0
 
     def Collide_wall(self):
         if self.x <= 45 or self.x >= 715 - 13:
-            self.x -= self.dis_x
-            self.dis_x *= -1
+            self.x -= self.face_dis_x * self.power
             self.face_dis_x *= -1
         if self.y <= back_H - 610 + 13 or self.y >= back_H - 300 - 13:
-            self.y -= self.dis_y
-            self.dis_y *= -1
+            self.y -= self.face_dis_y * self.power
             self.face_dis_y *= -1
         pass
 
     def calculate_collision_angle(self, other_ball):
-        relative_velocity_x = other_ball.dis_x - self.dis_x
-        relative_velocity_y = other_ball.dis_y - self.dis_y
+        relative_velocity_x = other_ball.x - (self.x - (self.face_dis_x * self.power))
+        relative_velocity_y = other_ball.y - (self.y - (self.face_dis_y * self.power))
 
         relative_speed = math.sqrt(relative_velocity_x ** 2 + relative_velocity_y ** 2)
         relative_angle = math.atan2(relative_velocity_y, relative_velocity_x)
@@ -287,8 +270,8 @@ class Ball:
                     y_collide = True
 
                 if x_collide and y_collide:
-                    ball[i].dis_x = -(mainball.x - ball[i].x)
-                    ball[i].dis_y = (mainball.y - ball[i].y)
+                    ball[i].dis_x = -((mainball.x - mainball.dis_x) - ball[i].x)
+                    ball[i].dis_y = ((mainball.y - mainball.dis_y) - ball[i].y)
                     length = math.sqrt(math.pow(ball[i].dis_x, 2) + math.pow(ball[i].dis_y, 2))
                     ball[i].dis_x = (ball[i].dis_x / length) * (mainball.dis_x / 2)
                     ball[i].dis_y = (ball[i].dis_y / length) * (mainball.dis_y / 2)
