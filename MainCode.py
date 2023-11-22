@@ -118,8 +118,8 @@ class Player:
         self.Character_img = load_image("PNG\\Character.png")
         self.p1_select = 3
         self.p2_select = 3
-        self.p1_remain_ball = 6
-        self.p2_remain_ball = 6
+        self.p1_remain_ball = 3
+        self.p2_remain_ball = 3
     def draw(self):
         if background.state.now_state == GameStart:
             self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
@@ -242,19 +242,22 @@ class Ball:
                 self.power = 0
 
     def Collide_wall(self):
-        if self.x <= 34 or self.x >= 727 - 13:
-            if self.whatball % 2 == 0: player.p1_remain_ball -= 1
-            else: player.p2_remain_ball -= 1
+        if self.whatball != 0:
+            if (self.x >= 33 and self.y >= back_H - 310
+                    and self.x <= 53 and self.y <= back_H - 389):
+                if self.whatball % 2 == 0: player.p1_remain_ball -= 1
+                else: player.p2_remain_ball -= 1
+                ball.remove(self)
 
-        in_x = False
-        in_y = False
 
-        if self.x >= 34 and self.x <= 364 - 13:
-            in_x = True
-        if self.x >= 397 and self.x <= 727 - 13:
-            in_x = True
+
+        in_x = True
+        in_y = True
+
+        if self.x >= 34 + 13 and self.x <= 727 - 13:
+            in_x = False
         if self.y >= back_H - 622 + 13 and self.y <= back_H - 289 - 13:
-            in_y = True
+            in_y = False
 
         if in_x:
             self.x -= self.face_dis_x * self.power
@@ -277,7 +280,7 @@ class Ball:
 
     def Collide_ball(self):
         if self.whatball == 0:
-            for i in range(6):
+            for i in range(player.p1_remain_ball + player.p2_remain_ball):
                 ball_space_x = math.pow(ball[i].x - self.x, 2)
                 ball_space_y = math.pow(ball[i].y - self.y, 2)
                 x_collide = False
@@ -307,7 +310,7 @@ class Ball:
                     self.power = self.power * 0.9
                     return
         else:
-            for i in range(6):
+            for i in range(player.p1_remain_ball + player.p2_remain_ball):
                 x_collide = False
                 y_collide = False
                 if ball[i].whatball != self.whatball:
