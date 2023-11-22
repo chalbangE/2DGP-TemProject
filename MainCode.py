@@ -116,6 +116,8 @@ class Player:
         self.Character_img = load_image("PNG\\Character.png")
         self.p1_select = 3
         self.p2_select = 3
+        self.p1_remain_ball = 6
+        self.p2_remain_ball = 6
     def draw(self):
         if background.state.now_state == GameStart:
             self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
@@ -168,7 +170,7 @@ class Arrow:
         elif self.mod == 'power':
             if e.type == SDL_MOUSEBUTTONDOWN:
                 self.Mod_trans('shoot')
-                self.power = self.power / 10
+                self.power = self.power / 15
                 mainball.dis_x = self.dis_x * self.power
                 mainball.dis_y = self.dis_y * self.power
                 mainball.power = self.power
@@ -233,8 +235,7 @@ class Ball:
             stop_power = 0.01
 
             self.power -= decay_rate
-            if (self.whatball == 0):
-                print(self.power)
+
             if stop_power >= self.power:
                 self.power = 0
 
@@ -270,17 +271,55 @@ class Ball:
                     y_collide = True
 
                 if x_collide and y_collide:
-                    ball[i].dis_x = -((mainball.x - mainball.dis_x) - ball[i].x)
-                    ball[i].dis_y = ((mainball.y - mainball.dis_y) - ball[i].y)
-                    length = math.sqrt(math.pow(ball[i].dis_x, 2) + math.pow(ball[i].dis_y, 2))
-                    ball[i].dis_x = (ball[i].dis_x / length) * (mainball.dis_x / 2)
-                    ball[i].dis_y = (ball[i].dis_y / length) * (mainball.dis_y / 2)
-                    ball[i].face_dis_x = ball[i].dis_x
-                    ball[i].face_dis_y = ball[i].dis_y
-                    ball[i].radian = math.atan2(ball[i].face_dis_y, ball[i].face_dis_x)
-                    # 충돌을 잘 확인하기 위해 충돌하면 mainball을 아예 멈추게 수정
-                    self.dis_x = 0
-                    self.dis_y = 0
+                    # 충돌 각 계산
+                    collision_angle = self.calculate_collision_angle(ball[i])
+
+                    # 방향 반전 및 충돌 퍼짐 설정
+                    ball[i].face_dis_x = math.cos(collision_angle)
+                    ball[i].face_dis_y = math.sin(collision_angle)
+                    self.face_dis_x = -math.cos(collision_angle)
+                    self.face_dis_y = -math.sin(collision_angle)
+
+                    # 충돌 이동 계산
+                    ball[i].dis_x = ball[i].face_dis_x * ((self.face_dis_x * self.power) / 2)
+                    ball[i].dis_y = ball[i].face_dis_y * ((self.face_dis_y * self.power) / 2)
+
+                    # 충돌 후 속도 감소
+                    ball[i].power = (self.power * 0.8)
+                    self.power = self.power * 0.9
+                    if ball[i].power != 0:
+                        print(ball[i].whatball, ball[i].power)
+                        print(self.whatball, self.power)
+        else:
+            for i in range(6):
+                x_collide = False
+                y_collide = False
+                if ball[i].whatball != self.whatball:
+                    ball_space_x = math.pow(ball[i].x - self.x, 2)
+                    ball_space_y = math.pow(ball[i].y - self.y, 2)
+                    if ball_space_x <= math.pow(26, 2):
+                        x_collide = True
+                    if ball_space_y <= math.pow(26, 2):
+                        y_collide = True
+
+                if x_collide and y_collide:
+                    # 충돌 각 계산
+                    collision_angle = self.calculate_collision_angle(ball[i])
+
+                    # 방향 반전 및 충돌 퍼짐 설정
+                    ball[i].face_dis_x = math.cos(collision_angle)
+                    ball[i].face_dis_y = math.sin(collision_angle)
+                    self.face_dis_x = -math.cos(collision_angle)
+                    self.face_dis_y = -math.sin(collision_angle)
+
+                    # 충돌 이동 계산
+                    ball[i].dis_x = ball[i].face_dis_x * ((self.face_dis_x * self.power) / 2)
+                    ball[i].dis_y = ball[i].face_dis_y * ((self.face_dis_y * self.power) / 2)
+
+                    # 충돌 후 속도 감소
+                    ball[i].power = self.power
+                    self.power = self.power * 0.8
+
 
 
 

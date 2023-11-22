@@ -1,3 +1,4 @@
+import MainCode
 from pico2d import *
 
 back_W, back_H = 752, 669
@@ -12,7 +13,7 @@ class BackGround:
         self.state.draw()
     def update(self):
         self.state.update()
-        #print(self.state)
+
     def handle_event(self, event):
         self.state.handle_event(('INPUT', event))
 
@@ -68,11 +69,42 @@ class GameStart:
     def exit(back):
         pass
 
+class End:
+    @staticmethod
+    def enter(back):
+        pass
+    @staticmethod
+    def draw(back):
+        if MainCode.player.p1_remain_ball == 0:
+            if MainCode.player.p1_select == 0:
+                back.end_image1.draw(back_W / 2, back_H / 2)
+            elif MainCode.player.p1_select == 1:
+                back.end_image2.draw(back_W / 2, back_H / 2)
+            elif MainCode.player.p1_select == 2:
+                back.end_image3.draw(back_W / 2, back_H / 2)
+
+        elif MainCode.player.p2_remain_ball == 0:
+            if MainCode.player.p1_select == 0:
+                back.end_image1.draw(back_W / 2, back_H / 2)
+            elif MainCode.player.p1_select == 1:
+                back.end_image2.draw(back_W / 2, back_H / 2)
+            elif MainCode.player.p1_select == 2:
+                back.end_image3.draw(back_W / 2, back_H / 2)
+    @staticmethod
+    def update(back):
+        pass
+    @staticmethod
+    def exit(back):
+        pass
+
 class State:
      def __init__(self, back):
         self.image1 = load_image('PNG\\ready_background.png')
         self.image2 = load_image('PNG\\play_background2.png')
         self.image3 = load_image('PNG\\select_background.png')
+        self.end_image1 = load_image('PNG\\end_background1.png')
+        self.end_image2 = load_image('PNG\\end_background1.png')
+        self.end_image3 = load_image('PNG\\end_background1.png')
 
         self.p1select_img = load_image('PNG\\1P_select.png')
         self.p2select_img = load_image('PNG\\2P_select.png')
