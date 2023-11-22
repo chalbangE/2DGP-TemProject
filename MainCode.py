@@ -242,14 +242,11 @@ class Ball:
                 self.power = 0
 
     def Collide_wall(self):
-        if self.whatball != 0:
-            if (self.x >= 33 and self.y >= back_H - 310
-                    and self.x <= 53 and self.y <= back_H - 389):
-                if self.whatball % 2 == 0: player.p1_remain_ball -= 1
-                else: player.p2_remain_ball -= 1
-                ball.remove(self)
-
-
+        if (self.x >= 33 and self.y <= back_H - 290
+                and self.x <= 53 and self.y >= back_H - 310):
+            if self.whatball % 2 == 0: player.p1_remain_ball -= 1
+            else: player.p2_remain_ball -= 1
+            self.power = 0
 
         in_x = True
         in_y = True
@@ -285,7 +282,6 @@ class Ball:
                 ball_space_y = math.pow(ball[i].y - self.y, 2)
                 x_collide = False
                 y_collide = False
-
                 if ball_space_x <= math.pow(26, 2):
                     x_collide = True
                 if ball_space_y <= math.pow(26, 2):
@@ -304,9 +300,11 @@ class Ball:
                                                np.array([self.face_dis_x, self.face_dis_y]))
 
                     # 결과를 self.dis_x, self.dis_y에 넣기
+                    self.x -= self.face_dis_x * self.power
+                    self.y -= self.face_dis_y * self.power
                     self.face_dis_x, self.face_dis_x = reflected_vector[0], reflected_vector[1]
 
-                    ball[i].power = (self.power * 0.8)
+                    ball[i].power = (self.power * 0.9)
                     self.power = self.power * 0.9
                     return
         else:
@@ -334,11 +332,13 @@ class Ball:
                                                np.array([self.face_dis_x, self.face_dis_y]))
 
                     # 결과를 self.dis_x, self.dis_y에 넣기
+                    self.x -= self.face_dis_x * self.power
+                    self.y -= self.face_dis_y * self.power
                     self.face_dis_x, self.face_dis_x = reflected_vector[0], reflected_vector[1]
 
                     # 충돌 후 속도 감소
                     ball[i].power = self.power
-                    self.power = self.power * 0.8
+                    self.power = self.power
                     return
 
 
