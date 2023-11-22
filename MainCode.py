@@ -1,7 +1,9 @@
+
 from pico2d import *
 from BackGround import *
 import random
 import math
+import numpy as np
 
 def handle_events():
     global GameOn, mx, my
@@ -240,13 +242,28 @@ class Ball:
                 self.power = 0
 
     def Collide_wall(self):
-        if self.x <= 45 or self.x >= 715 - 13:
+        if self.x <= 34 or self.x >= 727 - 13:
+            if self.whatball % 2 == 0: player.p1_remain_ball -= 1
+            else: player.p2_remain_ball -= 1
+
+        in_x = False
+        in_y = False
+
+        if self.x >= 34 and self.x <= 364 - 13:
+            in_x = True
+        if self.x >= 397 and self.x <= 727 - 13:
+            in_x = True
+        if self.y >= back_H - 622 + 13 and self.y <= back_H - 289 - 13:
+            in_y = True
+
+        if in_x:
             self.x -= self.face_dis_x * self.power
             self.face_dis_x *= -1
-        if self.y <= back_H - 610 + 13 or self.y >= back_H - 300 - 13:
+        if in_y:
             self.y -= self.face_dis_y * self.power
             self.face_dis_y *= -1
         pass
+
 
     def calculate_collision_angle(self, other_ball):
         relative_velocity_x = other_ball.x - (self.x - (self.face_dis_x * self.power))
@@ -265,6 +282,7 @@ class Ball:
                 ball_space_y = math.pow(ball[i].y - self.y, 2)
                 x_collide = False
                 y_collide = False
+
                 if ball_space_x <= math.pow(26, 2):
                     x_collide = True
                 if ball_space_y <= math.pow(26, 2):
@@ -277,19 +295,17 @@ class Ball:
                     # 방향 반전 및 충돌 퍼짐 설정
                     ball[i].face_dis_x = math.cos(collision_angle)
                     ball[i].face_dis_y = math.sin(collision_angle)
-                    self.face_dis_x = -math.cos(collision_angle)
-                    self.face_dis_y = -math.sin(collision_angle)
 
-                    # 충돌 이동 계산
-                    ball[i].dis_x = ball[i].face_dis_x * ((self.face_dis_x * self.power) / 2)
-                    ball[i].dis_y = ball[i].face_dis_y * ((self.face_dis_y * self.power) / 2)
+                    # 벡터 뒤집기
+                    reflected_vector = reflect(np.array([ball[i].face_dis_x, ball[i].face_dis_y]),
+                                               np.array([self.face_dis_x, self.face_dis_y]))
 
-                    # 충돌 후 속도 감소
+                    # 결과를 self.dis_x, self.dis_y에 넣기
+                    self.face_dis_x, self.face_dis_x = reflected_vector[0], reflected_vector[1]
+
                     ball[i].power = (self.power * 0.8)
                     self.power = self.power * 0.9
-                    if ball[i].power != 0:
-                        print(ball[i].whatball, ball[i].power)
-                        print(self.whatball, self.power)
+                    return
         else:
             for i in range(6):
                 x_collide = False
@@ -309,16 +325,18 @@ class Ball:
                     # 방향 반전 및 충돌 퍼짐 설정
                     ball[i].face_dis_x = math.cos(collision_angle)
                     ball[i].face_dis_y = math.sin(collision_angle)
-                    self.face_dis_x = -math.cos(collision_angle)
-                    self.face_dis_y = -math.sin(collision_angle)
 
-                    # 충돌 이동 계산
-                    ball[i].dis_x = ball[i].face_dis_x * ((self.face_dis_x * self.power) / 2)
-                    ball[i].dis_y = ball[i].face_dis_y * ((self.face_dis_y * self.power) / 2)
+                    # 벡터 뒤집기
+                    reflected_vector = reflect(np.array([ball[i].face_dis_x, ball[i].face_dis_y]),
+                                               np.array([self.face_dis_x, self.face_dis_y]))
+
+                    # 결과를 self.dis_x, self.dis_y에 넣기
+                    self.face_dis_x, self.face_dis_x = reflected_vector[0], reflected_vector[1]
 
                     # 충돌 후 속도 감소
                     ball[i].power = self.power
                     self.power = self.power * 0.8
+                    return
 
 
 
@@ -381,6 +399,18 @@ def reset_game():
     mouse = Mouse()
     world.append(mouse)
     pass
+
+
+
+def normalize(vector):
+    magnitude = np.linalg.norm(vector)
+    return vector / magnitude if magnitude != 0 else vector
+
+def reflect(vector_b, vector_a):
+    a_normalized = normalize(vector_a)
+    projection = np.dot(vector_b, a_normalized) * a_normalized
+    reflection = vector_b - 2 * projection
+    return reflection
 
 def update_game():
     for o in world:

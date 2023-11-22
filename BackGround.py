@@ -1,10 +1,11 @@
-import MainCode
-from pico2d import *
 
 back_W, back_H = 752, 669
-back_WS = 762
+
+from pico2d import *
+
 def click(e):
     return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN
+
 class BackGround:
     def __init__(self):
         self.state = State(self)
