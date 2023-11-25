@@ -86,14 +86,17 @@ class Mouse():
                     background.state.p1whatSelect = 2
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p1_select = 2
+                        player.p1_skill_turn = 9
                 elif my >= 250 and my <= 410:
                     background.state.p1whatSelect = 1
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p1_select = 1
+                        player.p1_skill_turn = 5
                 elif my >= 410 and my <= 570:
                     background.state.p1whatSelect = 0
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p1_select = 0
+                        player.p1_skill_turn = 5
                 else:
                     background.state.p1whatSelect = 3
             elif player.p2_select == 3:
@@ -101,22 +104,26 @@ class Mouse():
                     background.state.p2whatSelect = 2
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p2_select = 2
+                        player.p2_skill_turn = 9
                         self.ready_ok = get_time()
                 elif my >= 250 and my <= 410:
                     background.state.p2whatSelect = 1
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p2_select = 1
+                        player.p2_skill_turn = 5
                         self.ready_ok = get_time()
                 elif my >= 410 and my <= 570:
                     background.state.p2whatSelect = 0
                     if e.type == SDL_MOUSEBUTTONDOWN:
                         player.p2_select = 0
+                        player.p2_skill_turn = 5
                         self.ready_ok = get_time()
                 else:
                     background.state.p2whatSelect = 3
             else:
                 if get_time() - self.ready_ok >= 1.5:
                     background.state.now_state = GameStart
+                    arrow.Mod_trans('skill')
                     hide_cursor()
 
 
@@ -128,6 +135,8 @@ class Player:
         self.p2_select = 3
         self.p1_remain_ball = 3
         self.p2_remain_ball = 3
+        self.p1_skill_turn = 5
+        self.p2_skill_turn = 5
     def draw(self):
         if background.state.now_state == GameStart:
             self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
@@ -148,14 +157,14 @@ class Player:
              self.now_state = Select
         pass
 
-class Arrow:
+class Gameplaying:
     def __init__(self):
         self.img = load_image("PNG\\arrow.png")
         self.radian = 0
         self.dis_x = 0
         self.dis_y = 0
         self.radian = math.atan2(self.dis_y, self.dis_x)
-        self.mod = 'dis'
+        self.mod = 'skill'
         self.power = 0
         self.power_font = load_font('ttf\\PF스타더스트 Bold.ttf', 30)
 
@@ -210,7 +219,10 @@ class Arrow:
         elif trans_mod == 'shoot':
             pass
         elif trans_mod == 'skill':
-            pass
+            if turn == 1:
+                if player.p1_skill_turn == 9:
+                    ball[random.randint(0, 2) + 2].goal = True
+            self.Mod_trans('dis')
 
 class Ball:
     img = None
@@ -244,7 +256,7 @@ class Ball:
                 self.ani = 0
             # 공 이동 끝나면 GGG
             if self.power == 0 and self.whatball == 0:
-                arrow.Mod_trans('dis')
+                arrow.Mod_trans('skill')
 
         self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
         pass
@@ -428,7 +440,7 @@ def reset_game():
     player = Player()
     world.append(player)
 
-    arrow = Arrow()
+    arrow = Gameplaying()
     world.append(arrow)
 
     mouse = Mouse()
