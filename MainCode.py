@@ -14,6 +14,8 @@ def handle_events():
             GameOn = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             GameOn = False
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_a:
+            player.p1_remain_ball -= 1
         elif event.type == SDL_MOUSEMOTION:
             mx, my = event.x, back_H - 1 - event.y
             mouse.handle_event(event)
@@ -120,6 +122,7 @@ class Player:
         self.p2_select = 3
         self.p1_remain_ball = 3
         self.p2_remain_ball = 3
+        self.font = load_font('ttf\\PF스타더스트 Bold.ttf', 30)
     def draw(self):
         if background.state.now_state == GameStart:
             self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
@@ -127,6 +130,12 @@ class Player:
         pass
 
     def update(self):
+        if self.p1_remain_ball == 0:
+            background.state.now_state = End
+            background.win = background.state.p1whatSelect
+        elif self.p1_remain_ball == 0:
+            background.state.now_state = End
+            background.win = background.state.p2whatSelect
         pass
 
     def handle_event(self, e):
@@ -172,7 +181,7 @@ class Arrow:
         elif self.mod == 'power':
             if e.type == SDL_MOUSEBUTTONDOWN:
                 self.Mod_trans('shoot')
-                self.power = self.power / 15
+                self.power = self.power / 13
                 mainball.dis_x = self.dis_x * self.power
                 mainball.dis_y = self.dis_y * self.power
                 mainball.power = self.power
@@ -206,9 +215,10 @@ class Ball:
         self.face_dis_y = 0
         self.radian = 0
         self.power = 0
+        self.goal = False
 
     def draw(self):
-        if background.state.now_state == GameStart:
+        if background.state.now_state == GameStart and self.goal == False:
             self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.radian, '', self.x, self.y, 26, 26)
     def update(self):
         self.x += self.face_dis_x * self.power
@@ -233,8 +243,8 @@ class Ball:
 
     def Dis_reduce(self):
         if self.power > 0:
-            decay_rate = 0.02
-            stop_power = 0.01
+            decay_rate = 0.01
+            stop_power = 0.005
 
             self.power -= decay_rate
 
@@ -242,16 +252,30 @@ class Ball:
                 self.power = 0
 
     def Collide_wall(self):
-        if (self.x >= 33 and self.y <= back_H - 290
-                and self.x <= 53 and self.y >= back_H - 310):
-            if self.whatball % 2 == 0: player.p1_remain_ball -= 1
-            else: player.p2_remain_ball -= 1
-            self.power = 0
+        Goal = False
+        if ((self.x <= 52 and self.y >= back_H - 309)
+            or (self.x >= 708 and self.y >= back_H - 309)
+            or (self.y <= back_H - 603 and self.x <= 52)
+            or (self.x >= 708 and self.y <= back_H - 603)
+            or (self.x >= 371 and self.x <= 390 and self.y >= back_H - 305)
+            or (self.x >= 371 and self.x <= 390 and self.y <= back_H - 615)):
+            Goal = True
+
+        if Goal:
+            if self.whatball == 0:
+                if turn == 1: player.p2_remain_ball = 0
+                else: player.p1_remain_ball = 0
+            elif self.whatball % 2 == 0 and self.goal == False:
+                player.p1_remain_ball -= 1
+                self.goal = True
+            elif self.whatball % 2 == 1 and self.goal == False:
+                player.p2_remain_ball -= 1
+                self.goal = True
 
         in_x = True
         in_y = True
 
-        if self.x >= 34 + 13 and self.x <= 727 - 13:
+        if self.x >= 34 and self.x <= 727 - 13:
             in_x = False
         if self.y >= back_H - 622 + 13 and self.y <= back_H - 289 - 13:
             in_y = False
@@ -259,9 +283,11 @@ class Ball:
         if in_x:
             self.x -= self.face_dis_x * self.power
             self.face_dis_x *= -1
+            self.power *= 0.9
         if in_y:
             self.y -= self.face_dis_y * self.power
             self.face_dis_y *= -1
+            self.power *= 0.9
         pass
 
 
@@ -278,68 +304,65 @@ class Ball:
     def Collide_ball(self):
         if self.whatball == 0:
             for i in range(player.p1_remain_ball + player.p2_remain_ball):
-                ball_space_x = math.pow(ball[i].x - self.x, 2)
-                ball_space_y = math.pow(ball[i].y - self.y, 2)
-                x_collide = False
-                y_collide = False
-                if ball_space_x <= math.pow(26, 2):
-                    x_collide = True
-                if ball_space_y <= math.pow(26, 2):
-                    y_collide = True
-
-                if x_collide and y_collide:
-                    # 충돌 각 계산
-                    collision_angle = self.calculate_collision_angle(ball[i])
-
-                    # 방향 반전 및 충돌 퍼짐 설정
-                    ball[i].face_dis_x = math.cos(collision_angle)
-                    ball[i].face_dis_y = math.sin(collision_angle)
-
-                    # 벡터 뒤집기
-                    reflected_vector = reflect(np.array([ball[i].face_dis_x, ball[i].face_dis_y]),
-                                               np.array([self.face_dis_x, self.face_dis_y]))
-
-                    # 결과를 self.dis_x, self.dis_y에 넣기
-                    self.x -= self.face_dis_x * self.power
-                    self.y -= self.face_dis_y * self.power
-                    self.face_dis_x, self.face_dis_x = reflected_vector[0], reflected_vector[1]
-
-                    ball[i].power = (self.power * 0.9)
-                    self.power = self.power * 0.9
-                    return
-        else:
-            for i in range(player.p1_remain_ball + player.p2_remain_ball):
-                x_collide = False
-                y_collide = False
-                if ball[i].whatball != self.whatball:
+                if self.goal == False and ball[i].goal == False:
                     ball_space_x = math.pow(ball[i].x - self.x, 2)
                     ball_space_y = math.pow(ball[i].y - self.y, 2)
+                    x_collide = False
+                    y_collide = False
+
                     if ball_space_x <= math.pow(26, 2):
                         x_collide = True
                     if ball_space_y <= math.pow(26, 2):
                         y_collide = True
 
-                if x_collide and y_collide:
-                    # 충돌 각 계산
-                    collision_angle = self.calculate_collision_angle(ball[i])
+                    if x_collide and y_collide:
+                        # 충돌 각 계산
+                        collision_angle = self.calculate_collision_angle(ball[i])
 
-                    # 방향 반전 및 충돌 퍼짐 설정
-                    ball[i].face_dis_x = math.cos(collision_angle)
-                    ball[i].face_dis_y = math.sin(collision_angle)
+                        # 방향 반전 및 충돌 퍼짐 설정
+                        ball[i].face_dis_x = math.cos(collision_angle)
+                        ball[i].face_dis_y = math.sin(collision_angle)
 
-                    # 벡터 뒤집기
-                    reflected_vector = reflect(np.array([ball[i].face_dis_x, ball[i].face_dis_y]),
-                                               np.array([self.face_dis_x, self.face_dis_y]))
+                        # 결과를 self.dis_x, self.dis_y에 넣기
+                        self.x -= self.face_dis_x * self.power
+                        self.y -= self.face_dis_y * self.power
+                        self.face_dis_x = -math.cos(collision_angle)
+                        self.face_dis_y = -math.sin(collision_angle)
 
-                    # 결과를 self.dis_x, self.dis_y에 넣기
-                    self.x -= self.face_dis_x * self.power
-                    self.y -= self.face_dis_y * self.power
-                    self.face_dis_x, self.face_dis_x = reflected_vector[0], reflected_vector[1]
+                        ball[i].power = (self.power * 0.9)
+                        self.power = self.power * 0.9
+                        return
+        else:
+            for i in range(player.p1_remain_ball + player.p2_remain_ball):
+                if self.goal == False and ball[i].goal == False:
+                    x_collide = False
+                    y_collide = False
+                    if ball[i].whatball != self.whatball:
+                        ball_space_x = math.pow(ball[i].x - self.x, 2)
+                        ball_space_y = math.pow(ball[i].y - self.y, 2)
+                        if ball_space_x <= math.pow(26, 2):
+                            x_collide = True
+                        if ball_space_y <= math.pow(26, 2):
+                            y_collide = True
 
-                    # 충돌 후 속도 감소
-                    ball[i].power = self.power
-                    self.power = self.power
-                    return
+                    if x_collide and y_collide:
+                        # 충돌 각 계산
+                        collision_angle = self.calculate_collision_angle(ball[i])
+
+                        # 방향 반전 및 충돌 퍼짐 설정
+                        ball[i].face_dis_x = math.cos(collision_angle)
+                        ball[i].face_dis_y = math.sin(collision_angle)
+
+                        # 벡터 뒤집기
+                        self.x -= self.face_dis_x * self.power
+                        self.y -= self.face_dis_y * self.power
+                        self.face_dis_x = -math.cos(collision_angle)
+                        self.face_dis_y = -math.sin(collision_angle)
+
+                        # 충돌 후 속도 감소
+                        ball[i].power = self.power * 0.8
+                        self.power = self.power * 0.8
+                        return
 
 
 

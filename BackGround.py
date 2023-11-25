@@ -1,5 +1,6 @@
 
 back_W, back_H = 752, 669
+back_WS = 762
 
 from pico2d import *
 
@@ -10,6 +11,7 @@ class BackGround:
     def __init__(self):
         self.state = State(self)
         self.state.start()
+        self.win = 3
     def draw(self):
         self.state.draw()
     def update(self):
@@ -76,21 +78,12 @@ class End:
         pass
     @staticmethod
     def draw(back):
-        if MainCode.player.p1_remain_ball == 0:
-            if MainCode.player.p1_select == 0:
-                back.end_image1.draw(back_W / 2, back_H / 2)
-            elif MainCode.player.p1_select == 1:
-                back.end_image2.draw(back_W / 2, back_H / 2)
-            elif MainCode.player.p1_select == 2:
-                back.end_image3.draw(back_W / 2, back_H / 2)
-
-        elif MainCode.player.p2_remain_ball == 0:
-            if MainCode.player.p1_select == 0:
-                back.end_image1.draw(back_W / 2, back_H / 2)
-            elif MainCode.player.p1_select == 1:
-                back.end_image2.draw(back_W / 2, back_H / 2)
-            elif MainCode.player.p1_select == 2:
-                back.end_image3.draw(back_W / 2, back_H / 2)
+        if back.win == 0:
+            back.end_image1.draw(back_W / 2, back_H / 2)
+        elif back.win == 1:
+            back.end_image2.draw(back_W / 2, back_H / 2)
+        elif back.win == 2:
+            back.end_image3.draw(back_W / 2, back_H / 2)
     @staticmethod
     def update(back):
         pass
@@ -104,8 +97,8 @@ class State:
         self.image2 = load_image('PNG\\play_background2.png')
         self.image3 = load_image('PNG\\select_background.png')
         self.end_image1 = load_image('PNG\\end_background1.png')
-        self.end_image2 = load_image('PNG\\end_background1.png')
-        self.end_image3 = load_image('PNG\\end_background1.png')
+        self.end_image2 = load_image('PNG\\end_background2.png')
+        self.end_image3 = load_image('PNG\\end_background3.png')
 
         self.p1select_img = load_image('PNG\\1P_select.png')
         self.p2select_img = load_image('PNG\\2P_select.png')
@@ -113,7 +106,8 @@ class State:
         self.p2whatSelect = 3
 
         self.back = back
-        self.now_state = GameStart
+        self.win = 0
+        self.now_state = Select
      def start(self):
         self.now_state.enter(self)
      def update(self):
