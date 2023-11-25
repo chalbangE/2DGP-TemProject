@@ -132,10 +132,8 @@ class Player:
     def update(self):
         if self.p1_remain_ball == 0:
             background.state.now_state = End
-            background.win = background.state.p1whatSelect
         elif self.p1_remain_ball == 0:
             background.state.now_state = End
-            background.win = background.state.p2whatSelect
         pass
 
     def handle_event(self, e):

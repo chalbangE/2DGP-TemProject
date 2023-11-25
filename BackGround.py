@@ -14,6 +14,7 @@ class BackGround:
         self.win = 3
     def draw(self):
         self.state.draw()
+
     def update(self):
         self.state.update()
 
@@ -78,11 +79,11 @@ class End:
         pass
     @staticmethod
     def draw(back):
-        if back.win == 0:
+        if back.p1whatSelect == 0:
             back.end_image1.draw(back_W / 2, back_H / 2)
-        elif back.win == 1:
+        elif back.p1whatSelect == 1:
             back.end_image2.draw(back_W / 2, back_H / 2)
-        elif back.win == 2:
+        elif back.p1whatSelect == 2:
             back.end_image3.draw(back_W / 2, back_H / 2)
     @staticmethod
     def update(back):
