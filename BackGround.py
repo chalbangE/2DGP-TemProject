@@ -4,14 +4,11 @@ back_WS = 762
 
 from pico2d import *
 
-def click(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN
-
 class BackGround:
     def __init__(self):
         self.state = State(self)
         self.state.start()
-        self.win = 3
+        self.win = 0
     def draw(self):
         self.state.draw()
 
@@ -79,15 +76,26 @@ class End:
         pass
     @staticmethod
     def draw(back):
-        if back.p1whatSelect == 0:
-            back.end_image1.draw(back_W / 2, back_H / 2)
-        elif back.p1whatSelect == 1:
-            back.end_image2.draw(back_W / 2, back_H / 2)
-        elif back.p1whatSelect == 2:
-            back.end_image3.draw(back_W / 2, back_H / 2)
+        if back.win == 1:
+            if back.p1whatSelect == 0:
+                back.end_image1.draw(back_W / 2, back_H / 2)
+            elif back.p1whatSelect == 1:
+                back.end_image2.draw(back_W / 2, back_H / 2)
+            elif back.p1whatSelect == 2:
+                back.end_image3.draw(back_W / 2, back_H / 2)
+            back.font.draw(110, back_H - 500, 'P1', (103, 153, 255))
+        elif back.win == 2:
+            if back.p2whatSelect == 0:
+                back.end_image1.draw(back_W / 2, back_H / 2)
+            elif back.p2whatSelect == 1:
+                back.end_image2.draw(back_W / 2, back_H / 2)
+            elif back.p2whatSelect == 2:
+                back.end_image3.draw(back_W / 2, back_H / 2)
+            back.font.draw(110, back_H - 500, 'P2', (255, 151, 220))
     @staticmethod
     def update(back):
         pass
+
     @staticmethod
     def exit(back):
         pass
@@ -106,9 +114,12 @@ class State:
         self.p1whatSelect = 3
         self.p2whatSelect = 3
 
+        self.font = load_font('ttf\\Ramche.ttf', 90)
+
         self.back = back
         self.win = 0
         self.now_state = Select
+
      def start(self):
         self.now_state.enter(self)
      def update(self):

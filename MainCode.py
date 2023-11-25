@@ -15,7 +15,13 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             GameOn = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_a:
-            player.p1_remain_ball -= 1
+            player.p2_remain_ball -= 1
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            mouse.handle_event(event)
+            arrow.handle_event(event)
+            if background.state.now_state == End:
+                reset_game()
+                show_cursor()
         elif event.type == SDL_MOUSEMOTION:
             mx, my = event.x, back_H - 1 - event.y
             mouse.handle_event(event)
@@ -122,7 +128,6 @@ class Player:
         self.p2_select = 3
         self.p1_remain_ball = 3
         self.p2_remain_ball = 3
-        self.font = load_font('ttf\\PF스타더스트 Bold.ttf', 30)
     def draw(self):
         if background.state.now_state == GameStart:
             self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
@@ -132,11 +137,15 @@ class Player:
     def update(self):
         if self.p1_remain_ball == 0:
             background.state.now_state = End
-        elif self.p1_remain_ball == 0:
+            background.state.win = 1
+        elif self.p2_remain_ball == 0:
             background.state.now_state = End
+            background.state.win = 2
         pass
 
     def handle_event(self, e):
+        if self.now_state == End and e.type == SDL_KEYDOWN and e.key == SDLK_SPACE:
+             self.now_state = Select
         pass
 
 class Arrow:
@@ -167,24 +176,25 @@ class Arrow:
         pass
 
     def handle_event(self, e):
-        if background.state.now_state == GameStart and self.mod == 'dis':
-            self.dis_x = mx - mainball.x
-            self.dis_y = my - mainball.y
-            length = math.sqrt(math.pow(self.dis_x, 2) + math.pow(self.dis_y, 2))
-            self.dis_x = self.dis_x / length
-            self.dis_y = self.dis_y / length
+        if e.type == SDL_MOUSEMOTION or e.type == SDL_MOUSEBUTTONDOWN:
+            if background.state.now_state == GameStart and self.mod == 'dis':
+                self.dis_x = mx - mainball.x
+                self.dis_y = my - mainball.y
+                length = math.sqrt(math.pow(self.dis_x, 2) + math.pow(self.dis_y, 2))
+                self.dis_x = self.dis_x / length
+                self.dis_y = self.dis_y / length
 
-            if e.type == SDL_MOUSEBUTTONDOWN:
-                self.Mod_trans('power')
-        elif self.mod == 'power':
-            if e.type == SDL_MOUSEBUTTONDOWN:
-                self.Mod_trans('shoot')
-                self.power = self.power / 13
-                mainball.dis_x = self.dis_x * self.power
-                mainball.dis_y = self.dis_y * self.power
-                mainball.power = self.power
-                mainball.face_dis_x = mainball.dis_x
-                mainball.face_dis_y = mainball.dis_y
+                if e.type == SDL_MOUSEBUTTONDOWN:
+                    self.Mod_trans('power')
+            elif self.mod == 'power':
+                if e.type == SDL_MOUSEBUTTONDOWN:
+                    self.Mod_trans('shoot')
+                    self.power = self.power / 13
+                    mainball.dis_x = self.dis_x * self.power
+                    mainball.dis_y = self.dis_y * self.power
+                    mainball.power = self.power
+                    mainball.face_dis_x = mainball.dis_x
+                    mainball.face_dis_y = mainball.dis_y
 
     def Mod_trans(self, trans_mod):
         global turn
@@ -198,6 +208,8 @@ class Arrow:
         elif trans_mod == 'power':
             pass
         elif trans_mod == 'shoot':
+            pass
+        elif trans_mod == 'skill':
             pass
 
 class Ball:
@@ -213,6 +225,7 @@ class Ball:
         self.face_dis_y = 0
         self.radian = 0
         self.power = 0
+        self.radius = 13
         self.goal = False
 
     def draw(self):
@@ -365,8 +378,6 @@ class Ball:
 
 
 
-
-
 def reset_game():
     global GameOn, background, world, mouse, player, mainball, ball, arrow
 
@@ -425,16 +436,6 @@ def reset_game():
     pass
 
 
-
-def normalize(vector):
-    magnitude = np.linalg.norm(vector)
-    return vector / magnitude if magnitude != 0 else vector
-
-def reflect(vector_b, vector_a):
-    a_normalized = normalize(vector_a)
-    projection = np.dot(vector_b, a_normalized) * a_normalized
-    reflection = vector_b - 2 * projection
-    return reflection
 
 def update_game():
     for o in world:
