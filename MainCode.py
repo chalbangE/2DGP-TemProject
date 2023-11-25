@@ -241,7 +241,11 @@ class Gameplaying:
                             turn = 1
                     elif player.p2_skill_turn == 5 and turn == 2:
                         if player.p2_select == 0:
-                            ball[(random.randint(0, 2) * 2) + 1].ignore = True
+                            while (1):
+                                a = (random.randint(0, 2) * 2)
+                                if ball[a].goal == False:
+                                    ball[a].ignore = True
+                                    break
                             self.Mod_trans('dis')
                         elif player.p2_select == 1:
                             mainball.x = mainball.save_x
