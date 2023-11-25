@@ -219,13 +219,18 @@ class Gameplaying:
                 turn = 2
             else:
                 turn = 1
+                if player.p1_skill_turn < 5:
+                    player.p1_skill_turn += 1
+                if player.p2_skill_turn < 5:
+                    player.p2_skill_turn += 1
         elif trans_mod == 'power':
             pass
         elif trans_mod == 'shoot':
             pass
         elif trans_mod == 'skill':
-            if turn == 1:
-
+            if turn == 1 and player.p1_skill_turn == 5:
+                pass
+            elif turn == 2 and player.p2_skill_turn == 5:
                 pass
             self.Mod_trans('dis')
 
