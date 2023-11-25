@@ -250,6 +250,10 @@ class Gameplaying:
                 i.save_y = i.y
             pass
         elif trans_mod == 'skill':
+            if turn == 1 and player.p1_skill_turn == 9:
+                self.Mod_trans('dis')
+            elif turn == 2 and player.p2_skill_turn == 9:
+                self.Mod_trans('dis')
             pass
 
 class Ball:
