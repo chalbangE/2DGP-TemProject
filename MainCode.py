@@ -172,6 +172,7 @@ class Gameplaying:
         self.mod = 'dis'
         self.power = 0
         self.power_font = load_font('ttf\\PF스타더스트 Bold.ttf', 30)
+        self.skill_font = load_font('ttf\\Ramche.ttf', 25)
 
     def draw(self):
         if background.state.now_state == GameStart:
@@ -179,6 +180,10 @@ class Gameplaying:
                 self.img.clip_composite_draw(0, 0, 78, 26, self.radian, '', mainball.x, mainball.y, 78, 26)
             if self.mod == 'power':
                 self.power_font.draw(mx + 40, my + 40, f'{self.power // 10}', (255, 255, 255))
+            if player.p1_skill_turn == 5:
+                self.skill_font.draw(200, back_H - 215, f'스킬 ON!', (255, 255, 255))
+            if player.p2_skill_turn == 5:
+                self.skill_font.draw(back_W - 290, back_H - 215, f'스킬 ON!', (255, 255, 255))
 
     def update(self):
         if self.mod == 'dis':
