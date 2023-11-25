@@ -225,7 +225,8 @@ class Gameplaying:
                 elif e.type == SDL_KEYDOWN and e.key == SDLK_SPACE:
                     if player.p1_skill_turn == 5 and turn == 1:
                         if player.p1_select == 0:
-                            pass
+                            ball[(random.randint(0, 2) * 2)].ignore = True
+                            self.Mod_trans('dis')
                         elif player.p1_select == 1:
                             mainball.x = mainball.save_x
                             mainball.y = mainball.save_y
@@ -234,9 +235,10 @@ class Gameplaying:
                                 i.y = i.save_y
                             self.Mod_trans('dis')
                             turn = 1
-                    if player.p2_skill_turn == 5 and turn == 2:
+                    elif player.p2_skill_turn == 5 and turn == 2:
                         if player.p2_select == 0:
-                            pass
+                            ball[(random.randint(0, 2) * 2) + 1].ignore = True
+                            self.Mod_trans('dis')
                         elif player.p2_select == 1:
                             mainball.x = mainball.save_x
                             mainball.y = mainball.save_y
@@ -273,7 +275,9 @@ class Gameplaying:
                 self.Mod_trans('dis')
             elif turn == 2 and player.p2_skill_turn == 9:
                 self.Mod_trans('dis')
-            pass
+
+            for i in ball:
+                i.ignore = False
 
 class Ball:
     img = None
@@ -290,12 +294,13 @@ class Ball:
         self.power = 0
         self.radius = 13
         self.goal = False
+        self.ignore = False
 
         self.save_x = 0
         self.save_y = 0
 
     def draw(self):
-        if background.state.now_state == GameStart and self.goal == False:
+        if background.state.now_state == GameStart and self.goal == False and self.ignore == False:
             self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.radian, '', self.x, self.y, 26, 26)
     def update(self):
         self.x += self.face_dis_x * self.power
@@ -381,7 +386,7 @@ class Ball:
     def Collide_ball(self):
         if self.whatball == 0:
             for i in range(6):
-                if self.goal == False and ball[i].goal == False:
+                if self.goal == False and ball[i].goal == False and ball[i].ignore == False:
                     ball_space_x = math.pow(ball[i].x - self.x, 2)
                     ball_space_y = math.pow(ball[i].y - self.y, 2)
                     x_collide = False
@@ -411,7 +416,7 @@ class Ball:
                         return
         else:
             for i in range(6):
-                if self.goal == False and ball[i].goal == False:
+                if self.goal == False and ball[i].goal == False and ball[i].ignore == False:
                     x_collide = False
                     y_collide = False
                     if ball[i].whatball != self.whatball:
