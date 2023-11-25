@@ -182,8 +182,12 @@ class Gameplaying:
                 self.power_font.draw(mx + 40, my + 40, f'{self.power // 10}', (255, 255, 255))
             if player.p1_skill_turn == 5:
                 self.skill_font.draw(200, back_H - 215, f'스킬 ON!', (255, 255, 255))
+                if self.mod == 'skill':
+                    self.skill_font.draw(50, back_H // 2, '스킬을 사용하려면 스페이스바 / 넘어가려면 클릭', (255, 255, 255))
             if player.p2_skill_turn == 5:
                 self.skill_font.draw(back_W - 290, back_H - 215, f'스킬 ON!', (255, 255, 255))
+                if self.mod == 'skill':
+                    self.skill_font.draw(50, back_H // 2, '스킬을 사용하려면 스페이스바 / 넘어가려면 클릭', (255, 255, 255))
 
     def update(self):
         if self.mod == 'dis':
@@ -214,6 +218,14 @@ class Gameplaying:
                     mainball.power = self.power
                     mainball.face_dis_x = mainball.dis_x
                     mainball.face_dis_y = mainball.dis_y
+            elif self.mod == 'skill':
+                if e.type == SDL_MOUSEBUTTONDOWN:
+                    self.Mod_trans('dis')
+                elif e.type == SDL_KEYDOWN and e.key == SDLK_SPACE:
+                    if player.p1_skill_turn == 5:
+                        pass
+                    if player.p2_skill_turn == 5:
+                        pass
 
     def Mod_trans(self, trans_mod):
         global turn
@@ -231,13 +243,14 @@ class Gameplaying:
         elif trans_mod == 'power':
             pass
         elif trans_mod == 'shoot':
+            mainball.save_x = mainball.x
+            mainball.save_y = mainball.y
+            for i in ball:
+                i.save_x = i.x
+                i.save_y = i.y
             pass
         elif trans_mod == 'skill':
-            if turn == 1 and player.p1_skill_turn == 5:
-                pass
-            elif turn == 2 and player.p2_skill_turn == 5:
-                pass
-            self.Mod_trans('dis')
+            pass
 
 class Ball:
     img = None
@@ -254,6 +267,9 @@ class Ball:
         self.power = 0
         self.radius = 13
         self.goal = False
+
+        self.save_x = 0
+        self.save_y = 0
 
     def draw(self):
         if background.state.now_state == GameStart and self.goal == False:
