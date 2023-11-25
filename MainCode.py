@@ -331,7 +331,7 @@ class Ball:
 
     def Collide_ball(self):
         if self.whatball == 0:
-            for i in range(player.p1_remain_ball + player.p2_remain_ball):
+            for i in range(6):
                 if self.goal == False and ball[i].goal == False:
                     ball_space_x = math.pow(ball[i].x - self.x, 2)
                     ball_space_y = math.pow(ball[i].y - self.y, 2)
@@ -361,7 +361,7 @@ class Ball:
                         self.power = self.power * 0.9
                         return
         else:
-            for i in range(player.p1_remain_ball + player.p2_remain_ball):
+            for i in range(6):
                 if self.goal == False and ball[i].goal == False:
                     x_collide = False
                     y_collide = False
