@@ -225,7 +225,11 @@ class Gameplaying:
                 elif e.type == SDL_KEYDOWN and e.key == SDLK_SPACE:
                     if player.p1_skill_turn == 5 and turn == 1:
                         if player.p1_select == 0:
-                            ball[(random.randint(0, 2) * 2)].ignore = True
+                            while (1):
+                                a = (random.randint(0, 2) * 2)
+                                if ball[a].goal == False:
+                                    ball[a].ignore = True
+                                    break
                             self.Mod_trans('dis')
                         elif player.p1_select == 1:
                             mainball.x = mainball.save_x
