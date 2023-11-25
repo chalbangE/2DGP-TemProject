@@ -123,7 +123,12 @@ class Mouse():
             else:
                 if get_time() - self.ready_ok >= 1.5:
                     background.state.now_state = GameStart
-                    arrow.Mod_trans('skill')
+                    if player.p1_skill_turn == 9:
+                        ball[(random.randint(0, 2) * 2) + 1].goal = True
+                        player.p1_remain_ball = 2
+                    if player.p2_skill_turn == 9:
+                        ball[(random.randint(0, 2) * 2)].goal = True
+                        player.p2_remain_ball = 2
                     hide_cursor()
 
 
@@ -164,7 +169,7 @@ class Gameplaying:
         self.dis_x = 0
         self.dis_y = 0
         self.radian = math.atan2(self.dis_y, self.dis_x)
-        self.mod = 'skill'
+        self.mod = 'dis'
         self.power = 0
         self.power_font = load_font('ttf\\PF스타더스트 Bold.ttf', 30)
 
@@ -220,8 +225,8 @@ class Gameplaying:
             pass
         elif trans_mod == 'skill':
             if turn == 1:
-                if player.p1_skill_turn == 9:
-                    ball[random.randint(0, 2) + 2].goal = True
+
+                pass
             self.Mod_trans('dis')
 
 class Ball:
