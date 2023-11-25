@@ -199,7 +199,8 @@ class Gameplaying:
         pass
 
     def handle_event(self, e):
-        if e.type == SDL_MOUSEMOTION or e.type == SDL_MOUSEBUTTONDOWN:
+        global turn
+        if e.type == SDL_MOUSEMOTION or e.type == SDL_MOUSEBUTTONDOWN or e.type == SDL_KEYDOWN :
             if background.state.now_state == GameStart and self.mod == 'dis':
                 self.dis_x = mx - mainball.x
                 self.dis_y = my - mainball.y
@@ -222,10 +223,28 @@ class Gameplaying:
                 if e.type == SDL_MOUSEBUTTONDOWN:
                     self.Mod_trans('dis')
                 elif e.type == SDL_KEYDOWN and e.key == SDLK_SPACE:
-                    if player.p1_skill_turn == 5:
-                        pass
-                    if player.p2_skill_turn == 5:
-                        pass
+                    if player.p1_skill_turn == 5 and turn == 1:
+                        if player.p1_select == 0:
+                            pass
+                        elif player.p1_select == 1:
+                            mainball.x = mainball.save_x
+                            mainball.y = mainball.save_y
+                            for i in ball:
+                                i.x = i.save_x
+                                i.y = i.save_y
+                            self.Mod_trans('dis')
+                            turn = 1
+                    if player.p2_skill_turn == 5 and turn == 2:
+                        if player.p2_select == 0:
+                            pass
+                        elif player.p2_select == 1:
+                            mainball.x = mainball.save_x
+                            mainball.y = mainball.save_y
+                            for i in ball:
+                                i.x = i.save_x
+                                i.y = i.save_y
+                            self.Mod_trans('dis')
+                            turn = 2
 
     def Mod_trans(self, trans_mod):
         global turn
