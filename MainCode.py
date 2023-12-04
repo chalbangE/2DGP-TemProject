@@ -257,7 +257,7 @@ class Gameplaying:
                     elif player.p2_skill_turn == 5 and turn == 2:
                         if player.p2_select == 0:
                             while (1):
-                                a = (random.randint(0, 2) * 2)
+                                a = ((random.randint(0, 2) * 2) - 1)
                                 if ball[a].goal == False:
                                     ball[a].ignore = True
                                     break
