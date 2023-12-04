@@ -22,6 +22,7 @@ def handle_events():
             if background.state.now_state == End:
                 reset_game()
                 show_cursor()
+                background.state.now_state = Select
         elif event.type == SDL_MOUSEMOTION:
             mx, my = event.x, back_H - 1 - event.y
             mouse.handle_event(event)
@@ -43,6 +44,9 @@ class Mouse():
         self.play_img = load_image('PNG\\Character_mouse.png')
         self.ready_state = 0
         self.ready_ok = 0
+        self.click_wav = load_wav('WAV\\click.wav')
+        self.click_wav.set_volume(40)
+
 
     def draw(self):
         # Ready에서 마우스
@@ -66,6 +70,9 @@ class Mouse():
         pass
 
     def handle_event(self, e):
+        if e.type == SDL_MOUSEBUTTONDOWN:
+            self.click_wav.play()
+
         if e.type == SDL_MOUSEBUTTONDOWN and background.state.now_state == Ready:
             if mx >= 160 and mx <= 200 and my >= 300 and my <= 339:
                 if self.ready_state == 2:
@@ -142,6 +149,9 @@ class Player:
         self.p2_remain_ball = 3
         self.p1_skill_turn = 5
         self.p2_skill_turn = 5
+
+        self.end_wav = load_wav('WAV\\end.wav')
+        self.end_wav.set_volume(40)
     def draw(self):
         if background.state.now_state == GameStart:
             self.Character_img.clip_draw(self.p2_select * 100, 0, 100, 100, back_W - 130, back_H - 130, 280, 280)
@@ -149,17 +159,20 @@ class Player:
         pass
 
     def update(self):
-        if self.p1_remain_ball == 0:
-            background.state.now_state = End
-            background.state.win = 1
-        elif self.p2_remain_ball == 0:
-            background.state.now_state = End
-            background.state.win = 2
+        if background.state.now_state == GameStart:
+            if self.p1_remain_ball == 0:
+                self.end_wav.play()
+                background.state.now_state = End
+                background.state.win = 1
+            elif self.p2_remain_ball == 0:
+                self.end_wav.play()
+                background.state.now_state = End
+                background.state.win = 2
         pass
 
     def handle_event(self, e):
-        if self.now_state == End and e.type == SDL_KEYDOWN and e.key == SDLK_SPACE:
-             self.now_state = Select
+        if background.state.now_state == End and e.type == SDL_KEYDOWN and e.key == SDLK_SPACE:
+             background.state.now_state = Select
         pass
 
 class Gameplaying:
@@ -239,6 +252,8 @@ class Gameplaying:
                                 i.y = i.save_y
                             self.Mod_trans('dis')
                             turn = 1
+
+                        player.p1_skill_turn = 0
                     elif player.p2_skill_turn == 5 and turn == 2:
                         if player.p2_select == 0:
                             while (1):
@@ -255,6 +270,7 @@ class Gameplaying:
                                 i.y = i.save_y
                             self.Mod_trans('dis')
                             turn = 2
+                        player.p2_skill_turn = 0
 
     def Mod_trans(self, trans_mod):
         global turn
@@ -272,6 +288,7 @@ class Gameplaying:
         elif trans_mod == 'power':
             pass
         elif trans_mod == 'shoot':
+            mainball.ball_wav.play()
             mainball.save_x = mainball.x
             mainball.save_y = mainball.y
             for i in ball:
@@ -279,9 +296,9 @@ class Gameplaying:
                 i.save_y = i.y
             pass
         elif trans_mod == 'skill':
-            if turn == 1 and player.p1_skill_turn == 9:
+            if turn == 1 and player.p1_skill_turn != 5:
                 self.Mod_trans('dis')
-            elif turn == 2 and player.p2_skill_turn == 9:
+            elif turn == 2 and player.p2_skill_turn != 5:
                 self.Mod_trans('dis')
 
             for i in ball:
@@ -289,6 +306,8 @@ class Gameplaying:
 
 class Ball:
     img = None
+    ball_wav = None
+    goal_wav = None
     def __init__(self):
         if Ball.img == None:
             Ball.img = load_image("PNG\\ball26x26.png")
@@ -307,25 +326,32 @@ class Ball:
         self.save_x = 0
         self.save_y = 0
 
+        if Ball.ball_wav == None:
+            self.ball_wav = load_wav('WAV\\ball.wav')
+            self.ball_wav.set_volume(40)
+            self.goal_wav = load_wav('WAV\\ball_in.wav')
+            self.goal_wav.set_volume(40)
+
     def draw(self):
         if background.state.now_state == GameStart and self.goal == False and self.ignore == False:
             self.img.clip_composite_draw((self.ani // 5) * 26, self.whatball * 26, 26, 26, self.radian, '', self.x, self.y, 26, 26)
     def update(self):
-        self.x += self.face_dis_x * self.power
-        self.y += self.face_dis_y * self.power
+        if background.state.now_state == GameStart:
+            self.x += self.face_dis_x * self.power
+            self.y += self.face_dis_y * self.power
 
-        if self.power > 0:
-            self.Dis_reduce()
-            self.Collide_wall()
-            self.Collide_ball()
-            self.ani += 1
-            if self.ani == 75:
-                self.ani = 0
-            # 공 이동 끝나면 GGG
-            if self.power == 0 and self.whatball == 0:
-                arrow.Mod_trans('skill')
+            if self.power > 0:
+                self.Dis_reduce()
+                self.Collide_wall()
+                self.Collide_ball()
+                self.ani += 1
+                if self.ani == 75:
+                    self.ani = 0
+                # 공 이동 끝나면 GGG
+                if self.power == 0 and self.whatball == 0:
+                    arrow.Mod_trans('skill')
 
-        self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
+            self.radian = math.atan2(self.face_dis_y, self.face_dis_x)
         pass
 
     def handle_event(self, e):
@@ -358,14 +384,16 @@ class Ball:
             elif self.whatball % 2 == 0 and self.goal == False:
                 player.p1_remain_ball -= 1
                 self.goal = True
+                self.goal_wav.play()
             elif self.whatball % 2 == 1 and self.goal == False:
                 player.p2_remain_ball -= 1
                 self.goal = True
+                self.goal_wav.play()
 
         in_x = True
         in_y = True
 
-        if self.x >= 34 and self.x <= 727 - 13:
+        if self.x >= 40 and self.x <= 727 - 13:
             in_x = False
         if self.y >= back_H - 622 + 13 and self.y <= back_H - 289 - 13:
             in_y = False
@@ -374,10 +402,12 @@ class Ball:
             self.x -= self.face_dis_x * self.power
             self.face_dis_x *= -1
             self.power *= 0.9
+            self.ball_wav.play()
         if in_y:
             self.y -= self.face_dis_y * self.power
             self.face_dis_y *= -1
             self.power *= 0.9
+            self.ball_wav.play()
         pass
 
 
@@ -407,6 +437,7 @@ class Ball:
 
                     if x_collide and y_collide:
                         # 충돌 각 계산
+                        self.ball_wav.play()
                         collision_angle = self.calculate_collision_angle(ball[i])
 
                         # 방향 반전 및 충돌 퍼짐 설정
@@ -437,6 +468,7 @@ class Ball:
 
                     if x_collide and y_collide:
                         # 충돌 각 계산
+                        self.ball_wav.play()
                         collision_angle = self.calculate_collision_angle(ball[i])
 
                         # 방향 반전 및 충돌 퍼짐 설정
@@ -462,6 +494,8 @@ def reset_game():
 
     GameOn = True
     world = []
+
+    turn = 1
 
     background = BackGround()
     world.append(background)

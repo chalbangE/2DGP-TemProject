@@ -118,12 +118,19 @@ class State:
 
         self.back = back
         self.win = 0
-        self.now_state = Select
+        self.now_state = Ready
+
+        self.bgm = load_wav('WAV\\bgm.wav')
+        self.bgm.set_volume(20)
 
      def start(self):
-        self.now_state.enter(self)
+         self.bgm.set_volume(20)
+         self.bgm.repeat_play()
+         pass
      def update(self):
-        pass
+         if self.now_state == End:
+             self.bgm.set_volume(0)
+         pass
      def draw(self):
         self.now_state.draw(self)
      def handle_event(self, e):
